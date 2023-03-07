@@ -48,8 +48,10 @@ int List::loadFromFile(std::string FileName)
 			cnt = 0;
 		}
 
+		file >> cnt;
+
 		while (file >> temp) {
-			push_backValue(temp);
+			push_backValue(temp, false);
 		}
 
 		file.close();
@@ -172,7 +174,7 @@ void List::push_frontValue(int value)
 /// Add value at the back of the list
 /// </summary>
 /// <param name="value - value to be saved to the list"></param>
-void List::push_backValue(int value)
+void List::push_backValue(int value, bool increment)
 {
 	ListMember* temp;
 
@@ -188,7 +190,7 @@ void List::push_backValue(int value)
 
 	if (firstMember == NULL) firstMember = temp;
 
-	cnt++;
+	if (increment) cnt++;
 }
 
 /// <summary>
