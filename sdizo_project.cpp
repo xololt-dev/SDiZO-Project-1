@@ -111,7 +111,7 @@ void menu_list()
 			cout << " Podaj nazwę zbioru:";
 			cin >> fileName;
 			myList.loadFromFile(fileName);
-			// myList.display();
+			myList.display();
 			break;
 
 		case '2': //tutaj usuwanie elemenu z tablicy
