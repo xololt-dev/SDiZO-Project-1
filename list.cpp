@@ -176,9 +176,7 @@ void List::push_frontValue(int value)
 /// <param name="value - value to be saved to the list"></param>
 void List::push_backValue(int value, bool increment)
 {
-	ListMember* temp;
-
-	temp = new ListMember;
+	ListMember* temp = new ListMember;
 
 	if (lastMember != NULL) lastMember->next = temp;
 
