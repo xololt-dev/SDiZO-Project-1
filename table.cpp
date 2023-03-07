@@ -143,8 +143,9 @@ void Table::display()
 {
 	std::cout << "Size: " << cnt << "\n";
 	for (int i = 0; i < cnt; i++) {
-		std::cout << tab[i] << "\n";
+		std::cout << tab[i] << " ";
 	}
+	std::cout << "\n";
 }
 
 /// <summary>
