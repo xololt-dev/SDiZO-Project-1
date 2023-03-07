@@ -25,7 +25,7 @@ public:
 
 	void push_frontValue(int value);
 
-	void push_backValue(int value);
+	void push_backValue(int value, bool increment = true);
 
 	void deleteFromList(int index);
 
