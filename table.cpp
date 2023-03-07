@@ -27,7 +27,8 @@ int Table::loadFromFile(std::string FileName)
 	file.open(FileName, std::ios::in);
 	if (file.good()) {
 		int temp = 0;
-		
+		int i = 0;
+
 		// clear the table
 		if (cnt) {
 			delete[] tab;
@@ -35,15 +36,18 @@ int Table::loadFromFile(std::string FileName)
 			cnt = 0;
 		}
 
+		file >> cnt;
+
+		tab = new int[cnt];
+
 		while (file >> temp) {
-			addValue(cnt,temp);
+			tab[i] = temp;
+			i++;
 		}
 
 		file.close();
 	}
-	else {
-		std::cout << "Plik nie zostal otworzony!\n";
-	}
+	else std::cout << "Plik nie zostal otworzony!\n";
 
 	return 0;
 }
