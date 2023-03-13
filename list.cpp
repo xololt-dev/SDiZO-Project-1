@@ -138,7 +138,10 @@ void List::insertValue(int index, int value)
 			tempNew->next = NULL;
 			lastMember = tempNew;
 		}
-		else tempNew->next = temp->next;
+		else {
+			tempNew->next = temp->next;
+			tempNew->next->prev = tempNew;
+		}
 		tempNew->prev = temp;
 		temp->next = tempNew;
 	}
