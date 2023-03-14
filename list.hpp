@@ -36,4 +36,6 @@ public:
 	void display();
 
 	void generateList(int size);
+
+	void testFunc(int size);
 };

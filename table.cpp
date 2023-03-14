@@ -105,16 +105,16 @@ void Table::addValue(int index, int value)
 /// <param name="value - value to delete from the list, if exists"></param>
 void Table::deleteFromTable(int index)
 {
-	if (index >= cnt) {
-		std::cout << "Podany indeks jest wiekszy od tablicy!\n"; 
-		return;
-	}
 	// if table is empty, return with message
 	if (!cnt) {
 		std::cout << "Tablica jest pusta! \n";
 		return;
 	}
-
+	if (index >= cnt) {
+		std::cout << "Podany indeks jest wiekszy od tablicy!\n"; 
+		return;
+	}
+	
 	--cnt;
 	int* tabTemp = new int[cnt];
 
@@ -189,10 +189,18 @@ void Table::testFunc(int size)
 
 	generateTable(size);
 
-	for (int i = cnt - 1; i > 0; i--) {
-		deleteFromTable(rand()%i);
+	for (int i = cnt - 1; i >= 0; i--) {
+		deleteFromTable(rand()%(i+1));
+	}
+
+	for (int i = 0; i < size; i++) {
+		addValue(rand()%(i+1), i);
 	}
 	
+	for (int i = cnt - 1; i >= 0; i--) {
+		deleteFromTable(rand() % (i + 1));
+	}
+
 	auto end = std::chrono::steady_clock::now();
 	std::chrono::duration<double> elapsed_seconds = end - start;
 	std::cout << "elapsed time: " << elapsed_seconds.count() << "s\n";

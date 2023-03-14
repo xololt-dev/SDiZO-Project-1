@@ -1,6 +1,7 @@
 #include "list.hpp"
 #include <iostream>
 #include <fstream>
+#include <chrono>
 
 List::List()
 {
@@ -36,11 +37,10 @@ int List::loadFromFile(std::string FileName)
 			ListMember* tempLM;
 
 			// clear the list
-			while (firstMember != firstMember) {
+			while (firstMember != lastMember) { // firstMember) {
 				tempLM = firstMember->next;
 				delete firstMember;
 				firstMember = tempLM;
-				display();
 			}
 			
 			lastMember = firstMember = NULL;
@@ -85,18 +85,14 @@ bool List::IsValueInList(int value)
 /// <param name="value - value to be inserted"></param>
 void List::insertValue(int index, int value)
 {
-	// std::cout << "Przed: \n";
-	// display();
-
 	// if list empty simply set value at index 0
-	if (firstMember == NULL && lastMember == NULL) {
+	if (!cnt) {// firstMember == NULL && lastMember == NULL) {
 		ListMember* temp = new ListMember;
 		temp->data = value;
 		temp->prev = NULL;
 		temp->next = NULL;
 		
-		firstMember = temp;
-		lastMember = temp;
+		firstMember = lastMember = temp;
 
 		cnt++;
 		return;
@@ -110,20 +106,7 @@ void List::insertValue(int index, int value)
 	// searching from the "bottom"
 	if (index <= cnt / 2) {
 		temp = firstMember;
-		/*
-		for (int i = 0; i < cnt; i++) {
-			if (i != index) temp = temp->next;
-			else {
-				tempNew->prev = temp->prev;
-				tempNew->next = temp;
 
-				temp->prev = tempNew;
-				temp->prev->next = tempNew;
-				if (!index) firstMember = tempNew;
-				break;
-			}
-		}
-		*/
 		for (int i = 0; i < index; i++) {
 			temp = temp->next;
 		}
@@ -139,27 +122,26 @@ void List::insertValue(int index, int value)
 	else {
 		temp = lastMember;
 
-		for (int i = cnt - 1; i >= 0; i--) {
-			if (index >= cnt) break; 
-			temp = temp->prev;
-			if (i == index) break;
-		}
-
 		// if index value was higher than the length of the list, we assume it should go to the last position
 		if (index >= cnt) {
 			tempNew->next = NULL;
 			lastMember = tempNew;
 		}
 		else {
+			for (int i = cnt - 1; i >= 0; i--) {
+				if (index >= cnt) break;
+				temp = temp->prev;
+				if (i == index) break;
+			}
+
 			tempNew->next = temp->next;
 			tempNew->next->prev = tempNew;
 		}
+		
 		tempNew->prev = temp;
 		temp->next = tempNew;
 	}
 	cnt++;
-
-	// std::cout << "\nPo: \n";
 }
 
 /// <summary>
@@ -213,10 +195,7 @@ void List::push_backValue(int value, bool increment)
 void List::deleteFromList(int value)
 {
 	// if list is empty, return with information
-	if (!cnt) {
-		//std::cout << "Lista jest pusta! \n";
-		return;
-	}
+	if (!cnt) return;
 
 	ListMember* temp = firstMember;
 
@@ -226,21 +205,6 @@ void List::deleteFromList(int value)
 			temp = temp->next;
 		}
 		else {
-			// std::cout << "Przed: \n";
-			// display();
-			/*
-			// checks for last/first elements
-			if (temp->prev == NULL) {
-				temp->next->prev = NULL;
-				firstMember = temp->next;				
-			}
-			else temp->prev->next = temp->next;
-			if (temp->next == NULL) {
-				lastMember = temp->prev;
-				temp->prev->next = NULL;
-			}
-			else temp->next->prev = temp->prev;
-			*/
 			if (temp->prev == NULL) {
 				if (temp->next == NULL) firstMember = lastMember = NULL;
 				else {
@@ -249,20 +213,19 @@ void List::deleteFromList(int value)
 				}
 			}
 			else {
-				temp->prev->next = temp->next;
 				if (temp->next == NULL) {
 					lastMember = temp->prev;
 					temp->prev->next = NULL;
 				}
 				else temp->next->prev = temp->prev;
+
+				temp->prev->next = temp->next;
 			}
 
 			delete temp;
-			//std::cout <<
-				// "Usunieto wartosc " << value << "\n";
+			
 			cnt--;
 
-			// std::cout << "\nPo: \n";
 			return;			
 		}
 	}
@@ -342,6 +305,24 @@ void List::generateList(int size)
 {
 	for (int i = 0; i < size; i++) {
 		// list->push_backValue(i);
-		this->push_backValue(i);
+		// this->push_backValue(i);
+		insertValue(rand()%(i+1), i);
 	}
+}
+
+void List::testFunc(int size)
+{
+	srand(time(NULL));
+	
+	auto start = std::chrono::steady_clock::now();
+
+	generateList(size);
+	
+	for (int i = cnt - 1; i >= 0; i--) deleteFromList(i);
+	for (int i = 0; i < size; i++) insertValue(rand()%(i+1), i);
+	for (int i = cnt - 1; i >= 0; i--) deleteFromList(i);
+
+	auto end = std::chrono::steady_clock::now();
+	std::chrono::duration<double> elapsed_seconds = end - start;
+	std::cout << "elapsed time: " << elapsed_seconds.count() << "s\n";
 }
