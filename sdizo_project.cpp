@@ -1,7 +1,6 @@
 ﻿// menu.cpp : Defines the entry point for the console application.
 //
 
-
 #include <conio.h>
 #include <string>
 #include <iostream>
@@ -90,10 +89,10 @@ void menu_table()
 			// można sobie tu dodać własne dodatkowe case'y
 			cout << "Podaj ilosc elementów tablicy:";
 			cin >> value;
-			for (int i = 0; i < 10; i++) {
-				myTab.testFunc(value);
-			}			
-			myTab.display();
+			//for (int i = 0; i < 10; i++) {
+			myTab.testFunc(value);
+		//	}			
+			// myTab.display();
 			break;
 		}
 
@@ -206,6 +205,8 @@ int main(int argc, char* argv[])
 
 	} while (option != '0');
 
+	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
+	_CrtDumpMemoryLeaks();
 
 	return 0;
 }
