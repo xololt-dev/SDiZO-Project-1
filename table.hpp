@@ -31,4 +31,6 @@ public:
 	void display();
 
 	void generateTable(int size);
+
+	void testFunc(int size);
 };
