@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <conio.h>
+#include <chrono>
 
 //ta implementacja poni¿ej powinna znajdowaæ siê w pliku cpp np. table.cpp
 Table::Table()
@@ -87,13 +88,15 @@ void Table::addValue(int index, int value)
 
 	delete[] tab;
 	
-	tab = new int[++cnt];
+	++cnt;
+	
+	tab = tabTemp; /*
 	// copying values back
 	for (int i = 0; i < cnt; i++) {
 		tab[i] = tabTemp[i];
 	}
-
-	delete[] tabTemp;
+	*/
+	// delete[] tabTemp;
 }
 
 /// <summary>
@@ -116,28 +119,17 @@ void Table::deleteFromTable(int index)
 	int* tabTemp = new int[cnt];
 
 	// copying the values
-	for (int i = 0; i <= cnt; i++) {
-		if (i < index) {
-			tabTemp[i] = tab[i];
-			continue;
-		}			
-		if (i > index) {
-			tabTemp[i - 1] = tab[i];
-			continue;
-		}
-		if (i == index) {
-			continue;
-		}			
+	int i = 0;
+	for (; i < index; i++) {
+		tabTemp[i] = tab[i];
+	}
+	for (i = index + 1; i <= cnt; i++) {
+		tabTemp[i - 1] = tab[i];
 	}
 
-	delete[] tab;
-	tab = new int[cnt];
-	// copying the values back
-	for (int i = 0; i < cnt; i++) {
-		tab[i] = tabTemp[i];
-	}
+	delete [] tab;
 
-	delete[] tabTemp;
+	this->tab = tabTemp;
 }
 
 /// <summary>
@@ -168,7 +160,6 @@ void Table::generateTable(int size)
 	int high = 0;
 	if(cnt) high = tab[cnt - 1] + 1;
 	
-	// czy mo¿na vector? 
 	int* tabTemp = new int[size];
 
 	for (int i = 0; i < size; i++) {
@@ -179,6 +170,7 @@ void Table::generateTable(int size)
 	}
 
 	delete[] tab;
+	//faster here?
 	tab = new int[size];
 	
 	for (int i = 0; i < size; i++) {
@@ -188,4 +180,20 @@ void Table::generateTable(int size)
 	delete [] tabTemp;
 
 	cnt = size;
+}
+
+void Table::testFunc(int size)
+{
+	srand(time(NULL));
+	auto start = std::chrono::steady_clock::now();
+
+	generateTable(size);
+
+	for (int i = cnt - 1; i > 0; i--) {
+		deleteFromTable(rand()%i);
+	}
+	
+	auto end = std::chrono::steady_clock::now();
+	std::chrono::duration<double> elapsed_seconds = end - start;
+	std::cout << "elapsed time: " << elapsed_seconds.count() << "s\n";
 }
