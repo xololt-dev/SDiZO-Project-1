@@ -85,8 +85,8 @@ bool List::IsValueInList(int value)
 /// <param name="value - value to be inserted"></param>
 void List::insertValue(int index, int value)
 {
-	std::cout << "Przed: \n";
-	display();
+	// std::cout << "Przed: \n";
+	// display();
 
 	// if list empty simply set value at index 0
 	if (firstMember == NULL && lastMember == NULL) {
@@ -159,7 +159,7 @@ void List::insertValue(int index, int value)
 	}
 	cnt++;
 
-	std::cout << "\nPo: \n";
+	// std::cout << "\nPo: \n";
 }
 
 /// <summary>
@@ -226,9 +226,9 @@ void List::deleteFromList(int value)
 			temp = temp->next;
 		}
 		else {
-			std::cout << "Przed: \n";
-			display();
-
+			// std::cout << "Przed: \n";
+			// display();
+			/*
 			// checks for last/first elements
 			if (temp->prev == NULL) {
 				temp->next->prev = NULL;
@@ -240,13 +240,29 @@ void List::deleteFromList(int value)
 				temp->prev->next = NULL;
 			}
 			else temp->next->prev = temp->prev;
-			
-			delete[] temp;
-			std::cout <<
-				"Usunieto wartosc " << value << "\n";
+			*/
+			if (temp->prev == NULL) {
+				if (temp->next == NULL) firstMember = lastMember = NULL;
+				else {
+					temp->next->prev = NULL;
+					firstMember = temp->next;
+				}
+			}
+			else {
+				temp->prev->next = temp->next;
+				if (temp->next == NULL) {
+					lastMember = temp->prev;
+					temp->prev->next = NULL;
+				}
+				else temp->next->prev = temp->prev;
+			}
+
+			delete temp;
+			//std::cout <<
+				// "Usunieto wartosc " << value << "\n";
 			cnt--;
 
-			std::cout << "\nPo: \n";
+			// std::cout << "\nPo: \n";
 			return;			
 		}
 	}
@@ -266,7 +282,7 @@ void List::pop_frontFromList()
 		if (firstMember == NULL) lastMember = NULL;
 		else firstMember->prev = NULL;
 
-		delete[] temp;
+		delete temp;
 
 		cnt--;
 	}
@@ -284,7 +300,7 @@ void List::pop_backFromList()
 		if (lastMember == NULL) firstMember = NULL;
 		else lastMember->next = NULL;
 
-		delete[] temp;
+		delete temp;
 
 		cnt--;
 	}
