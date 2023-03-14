@@ -14,7 +14,6 @@ Table::Table()
 Table::~Table()
 {
 	delete [] tab;
-	tab = nullptr;
 }
 
 /// <summary>
@@ -111,25 +110,31 @@ void Table::deleteFromTable(int index)
 		return;
 	}
 	if (index >= cnt) {
-		std::cout << "Podany indeks jest wiekszy od tablicy!\n"; 
+		std::cout << "Podany indeks jest wiekszy od tablicy!\n";
 		return;
 	}
-	
+
 	--cnt;
-	int* tabTemp = new int[cnt];
-
-	// copying the values
-	int i = 0;
-	for (; i < index; i++) {
-		tabTemp[i] = tab[i];
+	if (!cnt) {
+		delete[] tab;
+		tab = NULL;
 	}
-	for (i = index + 1; i <= cnt; i++) {
-		tabTemp[i - 1] = tab[i];
+	else {
+		int* tabTemp = new int[cnt];
+
+		// copying the values
+		int i = 0;
+		for (; i < index; i++) {
+			tabTemp[i] = tab[i];
+		}
+		for (i = index + 1; i <= cnt; i++) {
+			tabTemp[i - 1] = tab[i];
+		}
+
+		delete[] tab;
+
+		tab = tabTemp;
 	}
-
-	delete [] tab;
-
-	this->tab = tabTemp;
 }
 
 /// <summary>
@@ -170,14 +175,8 @@ void Table::generateTable(int size)
 	}
 
 	delete[] tab;
-	//faster here?
-	tab = new int[size];
 	
-	for (int i = 0; i < size; i++) {
-		tab[i] = tabTemp[i];
-	}
-	
-	delete [] tabTemp;
+	tab = tabTemp;
 
 	cnt = size;
 }
@@ -187,21 +186,22 @@ void Table::testFunc(int size)
 	srand(time(NULL));
 	auto start = std::chrono::steady_clock::now();
 
-	generateTable(size);
+	for(int i = 1; i < 100; i++) generateTable(size*i);
 
+	auto end = std::chrono::steady_clock::now();
+	std::chrono::duration<double> elapsed_seconds = end - start;
+	std::cout << "elapsed time: " << elapsed_seconds.count() << "s\n";
+	
+	/*
 	for (int i = cnt - 1; i >= 0; i--) {
 		deleteFromTable(rand()%(i+1));
 	}
-
+	
 	for (int i = 0; i < size; i++) {
 		addValue(rand()%(i+1), i);
 	}
 	
 	for (int i = cnt - 1; i >= 0; i--) {
 		deleteFromTable(rand() % (i + 1));
-	}
-
-	auto end = std::chrono::steady_clock::now();
-	std::chrono::duration<double> elapsed_seconds = end - start;
-	std::cout << "elapsed time: " << elapsed_seconds.count() << "s\n";
+	}*/
 }
