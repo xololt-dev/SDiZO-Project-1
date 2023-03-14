@@ -110,7 +110,7 @@ void List::insertValue(int index, int value)
 	// searching from the "bottom"
 	if (index <= cnt / 2) {
 		temp = firstMember;
-
+		/*
 		for (int i = 0; i < cnt; i++) {
 			if (i != index) temp = temp->next;
 			else {
@@ -118,10 +118,22 @@ void List::insertValue(int index, int value)
 				tempNew->next = temp;
 
 				temp->prev = tempNew;
+				temp->prev->next = tempNew;
 				if (!index) firstMember = tempNew;
 				break;
 			}
 		}
+		*/
+		for (int i = 0; i < index; i++) {
+			temp = temp->next;
+		}
+		tempNew->prev = temp->prev;
+		tempNew->next = temp;	
+		
+		if (index == 0) firstMember = tempNew;
+		else temp->prev->next = tempNew;
+
+		temp->prev = tempNew;
 	}
 	// searching from the "top"
 	else {
