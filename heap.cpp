@@ -30,7 +30,6 @@ void Heap::heapify(int index)
 		int temp = tab[index];
 		tab[index] = tab[largest];
 		tab[largest] = temp;
-		display();
 		heapify(largest);
 	}
 }
@@ -119,6 +118,7 @@ void Heap::deleteFromHeap(int index)
 	}
 
 	tab[index] = tab[--cnt];
+	tab[cnt + 1] = NULL;
 	heapify(index);
 }
 

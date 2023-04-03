@@ -4,8 +4,8 @@
 class Heap {
 private:
 	int* tab;
-	int cnt;	// amount of values in table
-	int tab_size; // table size
+	int cnt;		// amount of values in table
+	int tab_size;	// table size
 
 public:
 	Heap();		//konstruktor - wywo³ywany automatycznie przy tworzeniu obieku
@@ -26,5 +26,4 @@ public:
 	void resize();
 
 	void display();
-
 };
