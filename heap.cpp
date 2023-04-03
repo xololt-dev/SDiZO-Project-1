@@ -113,6 +113,13 @@ void Heap::addValue(int value)
 
 void Heap::deleteFromHeap(int index)
 {
+	if (!cnt) {
+		std::cout << "Kopiec pusty!" << std::endl;
+		return;
+	}
+
+	tab[index] = tab[--cnt];
+	heapify(index);
 }
 
 /// <summary>
