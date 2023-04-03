@@ -127,11 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="heap.cpp" />
     <ClCompile Include="list.cpp" />
     <ClCompile Include="sdizo_project.cpp" />
     <ClCompile Include="table.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="heap.hpp" />
     <ClInclude Include="list.hpp" />
     <ClInclude Include="table.hpp" />
   </ItemGroup>
