@@ -8,6 +8,7 @@
 #include "table.hpp"
 #include "list.hpp"
 #include "heap.hpp"
+#include "bst_tree.hpp"
 
 using namespace std;
 
@@ -31,6 +32,7 @@ void displayMenu(string info)
 Table myTab; //myTab może być dynamiczna, może byc takze zadeklarowana w manu_table albo tutaj jako zmienna globalna
 List myList;
 Heap myHeap;
+BST_Tree myBSTTree;
 
 void menu_table()
 {
@@ -239,6 +241,74 @@ void menu_heap()
 	} while (opt != '0');
 }
 
+void menu_BST_Tree()
+{
+	char opt;
+	string fileName;
+	int index, value;
+
+	do {
+		displayMenu("--- DRZEWO BST ---");
+		opt = _getche();
+		cout << endl;
+		switch (opt) {
+		case '1': //tutaj wczytytwanie  tablicy z pliku
+			cout << " Podaj nazwę zbioru:";
+			cin >> fileName;
+			myBSTTree.loadFromFile(fileName);
+			myBSTTree.display();
+			break;
+
+		case '2': //tutaj usuwanie elemenu z tablicy
+			cout << " podaj index:";
+			cin >> index;
+			// myBSTTree.deleteFromHeap(index);
+			myBSTTree.display();
+			break;
+
+		case '3': //tutaj dodawanie elemetu do tablicy
+			cout << " podaj wartość:";
+			cin >> value;
+
+			myBSTTree.addValue(value);
+			myBSTTree.display();
+			break;
+
+		case '4': //tutaj znajdowanie elemetu w tablicy
+			cout << " podaj wartosc:";
+			cin >> value;
+			if (myHeap.isValueInHeap(value))
+				cout << "poadana wartosc jest w kopcu";
+			else
+				cout << "podanej wartosci NIE ma w kopcu";
+			break;
+
+		case '5':  //tutaj generowanie  tablicy
+			cout << "Podaj ilosc elementów kopca:";
+			cin >> value;
+			// myHeap.generateTable(value);
+			myBSTTree.display();
+			break;
+
+		case '6':  //tutaj wyświetlanie tablicy
+			myBSTTree.display();
+			break;
+
+		case '7': //tutaj nasza funkcja do eksperymentów (pomiary czasów i generowanie daneych) - nie będzie testowana przez prowadzącego 
+			// można sobie tu dodać własne dodatkowe case'y
+			cout << "Podaj ilosc elementów kopca:";
+			cin >> value;
+			//for (int i = 0; i < 10; i++) {
+			// myHeap.testFunc(value);
+			//	}			
+				// myTab.display();
+			break;
+		}
+
+	} while (opt != '0');
+}
+
+
 int main(int argc, char* argv[])
 {
 	char option;
@@ -248,6 +318,7 @@ int main(int argc, char* argv[])
 		cout << "1.Tablica" << endl;
 		cout << "2.Lista" << endl;
 		cout << "3.Kopiec" << endl;
+		cout << "4.Drzewo BST" << endl;
 		cout << "0.Wyjscie" << endl;
 		cout << "Podaj opcje:";
 		option = _getche();
@@ -265,8 +336,11 @@ int main(int argc, char* argv[])
 		case '3':
 			menu_heap();
 			break;
-		}
 
+		case '4':
+			menu_BST_Tree();
+			break;
+		}
 	} while (option != '0');
 
 	return 0;
