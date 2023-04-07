@@ -4,13 +4,22 @@
 
 BST_Tree::BST_Tree() 
 {
-	tab = NULL;
+	root = nullptr;
 	cnt = 0;
 }
 
 BST_Tree::~BST_Tree()
 {
-	delete[] tab;
+	postOrderDelete(root);
+}
+
+void BST_Tree::postOrderDelete(TreeMember* member)
+{
+	if (member == NULL) return;
+	postOrderDelete(member->left);
+	postOrderDelete(member->right);
+	delete member;
+	member = nullptr;
 }
 
 int BST_Tree::loadFromFile(std::string FileName)
@@ -23,15 +32,12 @@ int BST_Tree::loadFromFile(std::string FileName)
 
 		// clear the table
 		if (cnt) {
-			delete[] tab;
-			tab = nullptr;
+			postOrderDelete(root);
+			root = nullptr;
 			cnt = 0;
 		}
 
-		file >> cnt;
-
-		tab = new int[cnt];
-		for (int i = 0; i < cnt; i++) tab[i] = NULL;
+		file >> temp;
 
 		// Zrobiæ dodawanie po jednym elem.
 		while (file >> temp) {
@@ -45,41 +51,92 @@ int BST_Tree::loadFromFile(std::string FileName)
 	return 0;
 }
 
+bool BST_Tree::isValueInTree(int value)
+{
+	TreeMember* temp = root;
+
+	while (temp != NULL) {
+		if (temp->data == value) return true;
+
+		if (value < temp->data) temp = temp->left;
+		else temp = temp->right;
+	}
+	return false;
+}
+
 void BST_Tree::addValue(int value)
 {
-	if (tab == NULL) {
-		cnt = 1;
-		tab = new int[cnt];
-		tab[0] = value;
-		return;
-	}
-
-	int temp = 0;
-	int x = tab[temp];
-
-	while (x != NULL && temp < cnt) {
-		temp *= 2;
-
-		if (value < x) temp += 1;
-		else temp += 2;
-
-		x = tab[temp];
-	}
-
-	if (temp >= cnt) {
-		int* tabTemp = new int[temp + 1];
+	TreeMember* temp;
+	TreeMember* parentAddress = new TreeMember;
+	if (root != nullptr) {
+		temp = root;
 		
-		for (int i = 0; i < cnt; i++) {
-			tabTemp[i] = tab[i];
+		while (temp != NULL) {
+			parentAddress = temp;
+			if (temp->data > value) temp = temp->left;
+			else temp = temp->right;
 		}
-
-		delete[] tab;
-
-		cnt = temp + 1;
-		tab = tabTemp;
 	}
 
-	tab[temp] = value;
+	temp = new TreeMember;
+	temp->data = value;
+	temp->parent = parentAddress;
+	temp->left = temp->right = NULL;
+	if (parentAddress->data < value) parentAddress->right = temp;
+	else parentAddress->left = temp;
+	
+	if (root == nullptr) root = temp;
+	
+	cnt++;
+}
+
+void BST_Tree::deleteFromTree()
+{
+	if (!cnt || root == nullptr) return;
+
+	if (root->right == NULL && root->left == NULL) {
+		delete root;
+		root = nullptr;
+	}
+	else {
+		TreeMember* temp = nullptr;
+
+		if (root->right != NULL) {
+			temp = root->right;
+			
+			while (temp->left != NULL) temp = temp->left;
+
+			if (temp->parent != root) {
+				temp->parent->left = temp->right;
+				if (temp->right != NULL) temp->right->parent = temp->parent;
+				
+				temp->right = root->right;
+				temp->right->parent = temp;
+			}
+			temp->left = root->left;
+			if(temp->left != NULL) temp->left->parent = temp;
+		}
+		else if (root->left != NULL) {
+			temp = root->left;
+
+			while (temp->right != NULL) temp = temp->right;
+
+			if (temp->parent != root) {
+				temp->parent->right = temp->left;
+				if (temp->left != NULL) temp->left->parent = temp->parent;
+
+				temp->left = root->left;
+				temp->left->parent = temp;		
+			}
+
+			temp->right = root->right;
+			if(temp->right != NULL) temp->right->parent = temp;
+		}
+		temp->parent = NULL;
+		delete root;
+		root = temp;
+	}
+	cnt--;
 }
 
 void BST_Tree::DSW() 
@@ -89,15 +146,31 @@ void BST_Tree::DSW()
 
 void BST_Tree::rotateR(int index)
 {
-	int* tabTemp = new int[1];
+
 }
 
 void BST_Tree::display()
 {
-	// std::cout << "Size: " << cnt << "\n";
-	for (int i = 0; i < cnt; i++) {
-		if (tab[i] != NULL) std::cout << tab[i] << " ";
-		else std::cout << ". ";
+	TreeMember* temp;
+	
+	if (root == nullptr || !cnt) std::cout << "Drzewo jest puste." << std::endl;
+	else
+	{
+		std::cout << "Size: " << cnt << "\n";
+		
+		temp = root;
+		inOrder(root->left);
+		std::cout << temp->data << " ";
+		inOrder(root->right);
+		std::cout << "\n" << std::endl;
 	}
-	std::cout << "\n";
+}
+
+void BST_Tree::inOrder(TreeMember* member)
+{
+	if (member == NULL) return;
+	
+	inOrder(member->left);
+	std::cout << member->data << " ";
+	inOrder(member->right);
 }

@@ -1,10 +1,17 @@
 #pragma once
 #include <string>
 
+struct TreeMember {
+	TreeMember* left;
+	TreeMember* right;
+	TreeMember* parent;
+	int data;
+};
+
 class BST_Tree
 {
 private:
-	int* tab;
+	TreeMember* root;
 	int cnt;		// amount of values in table
 
 public:
@@ -12,6 +19,7 @@ public:
 	~BST_Tree();	//destrukor - wyw³ywany automatycznie przy usuwaniu obiektu
 
 	// void heapify(int index);
+	void postOrderDelete(TreeMember* member);
 
 	void buildTree();
 
@@ -21,7 +29,7 @@ public:
 
 	void addValue(int value);
 
-	void deleteFromTree(int index);
+	void deleteFromTree();
 
 	void resize();
 
@@ -32,4 +40,6 @@ public:
 	void rotateL(int index);
 
 	void display();
+	
+	void inOrder(TreeMember* member);
 };
