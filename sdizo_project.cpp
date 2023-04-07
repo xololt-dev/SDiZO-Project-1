@@ -260,9 +260,9 @@ void menu_BST_Tree()
 			break;
 
 		case '2': //tutaj usuwanie elemenu z tablicy
-			cout << " podaj index:";
-			cin >> index;
-			// myBSTTree.deleteFromHeap(index);
+			// cout << " podaj index:";
+			// cin >> index;
+			myBSTTree.deleteFromTree();
 			myBSTTree.display();
 			break;
 
