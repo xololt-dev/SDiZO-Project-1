@@ -29,7 +29,9 @@ public:
 
 	void addValue(int value);
 
-	void deleteFromTree();
+	void deleteFromTree(int value);
+
+	void deleteTreeRoot();
 
 	void resize();
 

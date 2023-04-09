@@ -90,7 +90,97 @@ void BST_Tree::addValue(int value)
 	cnt++;
 }
 
-void BST_Tree::deleteFromTree()
+void BST_Tree::deleteFromTree(int value)
+{
+	if (!cnt || root == nullptr) return;
+
+	TreeMember* temp = root;
+	
+	// find the node with the right value
+	while(temp->data != value) {
+		if (temp->data > value) {
+			if(temp->left != NULL) temp = temp->left;
+			else std::cout << "Wartosc nie istnieje! \n";
+		}
+		else {
+			if (temp->right != NULL) temp = temp->right;
+			else std::cout << "Wartosc nie istnieje! \n";
+		}
+	}
+	
+	if (temp == root) {
+		deleteTreeRoot();
+		return;
+	}
+
+	// if node doesn't have children, simply delete it
+	if (temp->left == NULL && temp->right == NULL) {
+		if (temp->parent != NULL) {
+			if (temp->parent->data > value) temp->parent->left = nullptr;
+			else temp->parent->right = nullptr;
+		}
+	}
+	// node has children, find a node to swap to
+	else {
+		TreeMember* tempSwap = temp;
+
+		if (tempSwap->left == NULL || tempSwap->right == NULL) {
+			// 1 subtree
+			if (tempSwap->left != NULL) {
+				// search min value from left subtree
+				tempSwap = tempSwap->left;
+				// ?
+				if (temp->data > temp->parent->data) temp->parent->right = tempSwap;
+				else temp->parent->left = tempSwap;
+
+				tempSwap->parent = temp->parent;
+			}
+			else {
+				// search min value from right subtree
+				tempSwap = tempSwap->right;
+				// ?
+				if (temp->data > temp->parent->data) temp->parent->right = tempSwap;
+				else temp->parent->left = tempSwap;
+
+				tempSwap->parent = temp->parent;
+			}
+		}
+		else {
+			// 2 subtrees
+			// find next value
+			if (tempSwap->right != NULL) {
+				// search min value from right subtree
+				tempSwap = tempSwap->right;
+				while (tempSwap->left != NULL) tempSwap = tempSwap->left;
+
+				// if double null/right null
+				if (tempSwap->parent != temp) {
+					if (tempSwap->right != NULL) tempSwap->right->parent = tempSwap->parent;
+					tempSwap->parent->left = tempSwap->right;
+
+					temp->data = tempSwap->data;
+
+					delete tempSwap;
+					tempSwap = nullptr;
+					cnt--;
+					return;
+				}
+				else {
+					tempSwap->left = temp->left;
+					temp->left->parent = tempSwap;
+					temp->parent->right = tempSwap;
+					tempSwap->parent = temp->parent;
+				}				
+			}
+		}
+	}
+	delete temp;
+	temp = nullptr;
+
+	cnt--;
+}
+
+void BST_Tree::deleteTreeRoot()
 {
 	if (!cnt || root == nullptr) return;
 
