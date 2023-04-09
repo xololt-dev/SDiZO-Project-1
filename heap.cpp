@@ -12,6 +12,7 @@ Heap::Heap()
 Heap::~Heap()
 {
 	delete[] tab;
+	tab = nullptr;
 }
 
 
