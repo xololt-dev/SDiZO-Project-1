@@ -37,9 +37,9 @@ public:
 
 	void DSW();
 
-	void rotateR(int index);
+	void rotateR(TreeMember* temp);
 	
-	void rotateL(int index);
+	void rotateL(TreeMember* temp);
 
 	void display();
 
