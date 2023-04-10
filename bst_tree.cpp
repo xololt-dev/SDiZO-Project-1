@@ -94,6 +94,11 @@ void BST_Tree::deleteFromTree(int value)
 {
 	if (!cnt || root == nullptr) return;
 
+	if (value == root->data) {
+		deleteTreeRoot();
+		return;
+	}
+
 	TreeMember* temp = root;
 	
 	// find the node with the right value
@@ -106,11 +111,6 @@ void BST_Tree::deleteFromTree(int value)
 			if (temp->right != NULL) temp = temp->right;
 			else std::cout << "Wartosc nie istnieje! \n";
 		}
-	}
-	
-	if (temp == root) {
-		deleteTreeRoot();
-		return;
 	}
 
 	// if node doesn't have children, simply delete it
@@ -236,17 +236,7 @@ void BST_Tree::DSW()
 	// unfold the tree
 	while (temp != NULL) {
 		if (temp->left != NULL) {
-			// rotacja prawo
-			/*temp->left->parent = temp->parent;
-			temp->parent->right = temp->left;
-			temp->parent = temp->left;
-			temp->left = temp->left->right;
-			if (temp->left != NULL) temp->left->parent = temp;
-			temp->parent->right = temp;
-			if (temp == root) root = temp->parent;
-			*/
 			rotateR(temp);
-			// 
 			temp = temp->parent;
 		}
 		else temp = temp->right;
@@ -276,7 +266,7 @@ void BST_Tree::DSW()
 void BST_Tree::rotateR(TreeMember* temp)
 {
 	temp->left->parent = temp->parent;
-	temp->parent->right = temp->left;
+	if (temp->parent != NULL) temp->parent->right = temp->left;
 	temp->parent = temp->left;
 	temp->left = temp->left->right;
 	if (temp->left != NULL) temp->left->parent = temp;
@@ -287,7 +277,7 @@ void BST_Tree::rotateR(TreeMember* temp)
 void BST_Tree::rotateL(TreeMember* temp)
 {
 	temp->right->parent = temp->parent;
-	temp->parent->right = temp->right;
+	if (temp->parent != NULL) temp->parent->right = temp->right;
 	temp->parent = temp->right;
 	temp->right = temp->parent->left;
 	if (temp->right != NULL) temp->right->parent = temp;
@@ -338,11 +328,11 @@ void BST_Tree::preOrder(TreeMember* member, int level)
 {
 	if (member == NULL) return;
 	
-	// #1 lewy od root?
-	// #2 lewy od rodzica?
+	// #1 is it left from root
+	// #2 is it left from parent
 
-	if (member->data < root->data) {
-		// lewy od root
+	if (member->data <= root->data) {
+		// left from root
 		for (int i = level; i > 0; i--) {
 			if (level > 1 && i < level) {
 				std::cout << "|  ";
@@ -353,7 +343,7 @@ void BST_Tree::preOrder(TreeMember* member, int level)
 		else std::cout << "'--";		
 	}
 	else {
-		// prawy od root
+		// right from root
 		for (int i = level; i > 0; i--) {
 			if (level > 2 && i < level - 1 && (member->parent->parent->right != NULL && member->parent->parent->right != member->parent)) {
 				std::cout << "|  ";

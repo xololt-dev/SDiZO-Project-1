@@ -33,8 +33,6 @@ public:
 
 	void deleteTreeRoot();
 
-	void resize();
-
 	void DSW();
 
 	void rotateR(TreeMember* temp);
