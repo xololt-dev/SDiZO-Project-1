@@ -297,12 +297,13 @@ void menu_BST_Tree()
 
 		case '7': //tutaj nasza funkcja do eksperymentów (pomiary czasów i generowanie daneych) - nie będzie testowana przez prowadzącego 
 			// można sobie tu dodać własne dodatkowe case'y
-			cout << "Podaj ilosc elementów kopca:";
-			cin >> value;
+			// cout << "Podaj ilosc elementów kopca:";
+			// cin >> value;
 			//for (int i = 0; i < 10; i++) {
 			// myHeap.testFunc(value);
 			//	}			
 				// myTab.display();
+			myBSTTree.DSW();
 			break;
 		}
 
