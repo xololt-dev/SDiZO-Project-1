@@ -231,12 +231,68 @@ void BST_Tree::deleteTreeRoot()
 
 void BST_Tree::DSW() 
 {
+	TreeMember* temp = root;
 
+	// unfold the tree
+	while (temp != NULL) {
+		if (temp->left != NULL) {
+			// rotacja prawo
+			/*temp->left->parent = temp->parent;
+			temp->parent->right = temp->left;
+			temp->parent = temp->left;
+			temp->left = temp->left->right;
+			if (temp->left != NULL) temp->left->parent = temp;
+			temp->parent->right = temp;
+			if (temp == root) root = temp->parent;
+			*/
+			rotateR(temp);
+			// 
+			temp = temp->parent;
+		}
+		else temp = temp->right;
+	}
+
+	int m = pow(2, floor(log2(cnt + 1))) - 1;
+	temp = root;
+
+	// n-m rotations left, from root, every second member
+	for (int i = cnt - m; i > 0; i--) {
+		rotateL(temp);
+		temp = temp->parent->right;
+	}	
+
+	while (m > 1) {
+		// m rotations left, from root, every second member
+		m = floor(m / 2);
+		temp = root;
+
+		for (int i = m; i > 0; i--) {
+			rotateL(temp);
+			temp = temp->parent->right;
+		}		
+	}
 }
 
-void BST_Tree::rotateR(int index)
+void BST_Tree::rotateR(TreeMember* temp)
 {
+	temp->left->parent = temp->parent;
+	temp->parent->right = temp->left;
+	temp->parent = temp->left;
+	temp->left = temp->left->right;
+	if (temp->left != NULL) temp->left->parent = temp;
+	temp->parent->right = temp;
+	if (temp == root) root = temp->parent;
+}
 
+void BST_Tree::rotateL(TreeMember* temp)
+{
+	temp->right->parent = temp->parent;
+	temp->parent->right = temp->right;
+	temp->parent = temp->right;
+	temp->right = temp->parent->left;
+	if (temp->right != NULL) temp->right->parent = temp;
+	temp->parent->left = temp;
+	if (temp == root) root = temp->parent;
 }
 
 void BST_Tree::display()
@@ -265,7 +321,6 @@ void BST_Tree::inOrder(TreeMember* member)
 
 void BST_Tree::displayTree()
 {
-	// needs fixing still
 	if (root != NULL) {
 		TreeMember* temp = root;
 
@@ -282,26 +337,32 @@ void BST_Tree::displayTree()
 void BST_Tree::preOrder(TreeMember* member, int level)
 {
 	if (member == NULL) return;
+	
+	// #1 lewy od root?
+	// #2 lewy od rodzica?
 
-	if (member->data < member->parent->data) {
+	if (member->data < root->data) {
+		// lewy od root
 		for (int i = level; i > 0; i--) {
-			if (level > 1 && i < level && member->data < root->data) {
-				std::cout << "|  ";
-			}
-			else std::cout << "   ";			
-		}
-		std::cout << "|--"; 
-	}
-	else {
-		for (int i = level; i > 0; i--) {
-			if (level > 1 && i < level && member->data < root->data) {
+			if (level > 1 && i < level) {
 				std::cout << "|  ";
 			}
 			else std::cout << "   ";
 		}
-		std::cout << "'--";
+		if (member->data < member->parent->data && member->parent->right != NULL) std::cout << "|--";
+		else std::cout << "'--";		
 	}
-
+	else {
+		// prawy od root
+		for (int i = level; i > 0; i--) {
+			if (level > 2 && i < level - 1 && (member->parent->parent->right != NULL && member->parent->parent->right != member->parent)) {
+				std::cout << "|  ";
+			}
+			else std::cout << "   ";
+		}
+		if (member->data < member->parent->data && member->parent->right != NULL) std::cout << "|--";
+		else std::cout << "'--";
+	}
 	std::cout << member->data << std::endl;
 	
 	preOrder(member->left, level + 1);
