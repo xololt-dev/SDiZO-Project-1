@@ -240,15 +240,13 @@ void BST_Tree::rotateR(int index)
 }
 
 void BST_Tree::display()
-{
-	TreeMember* temp;
-	
+{	
 	if (root == nullptr || !cnt) std::cout << "Drzewo jest puste." << std::endl;
 	else
 	{
 		std::cout << "Size: " << cnt << "\n";
 		
-		temp = root;
+		TreeMember* temp = root;
 		inOrder(root->left);
 		std::cout << temp->data << " ";
 		inOrder(root->right);
@@ -259,8 +257,53 @@ void BST_Tree::display()
 void BST_Tree::inOrder(TreeMember* member)
 {
 	if (member == NULL) return;
-	
+
 	inOrder(member->left);
 	std::cout << member->data << " ";
 	inOrder(member->right);
+}
+
+void BST_Tree::displayTree()
+{
+	// needs fixing still
+	if (root != NULL) {
+		TreeMember* temp = root;
+
+		std::cout << "'--";
+		std::cout << temp->data << std::endl;
+		
+		// preorder
+		preOrder(temp->left, 1);
+		preOrder(temp->right, 1);
+	}
+	else std::cout << "Drzewo jest puste." << std::endl;
+}
+
+void BST_Tree::preOrder(TreeMember* member, int level)
+{
+	if (member == NULL) return;
+
+	if (member->data < member->parent->data) {
+		for (int i = level; i > 0; i--) {
+			if (level > 1 && i < level && member->data < root->data) {
+				std::cout << "|  ";
+			}
+			else std::cout << "   ";			
+		}
+		std::cout << "|--"; 
+	}
+	else {
+		for (int i = level; i > 0; i--) {
+			if (level > 1 && i < level && member->data < root->data) {
+				std::cout << "|  ";
+			}
+			else std::cout << "   ";
+		}
+		std::cout << "'--";
+	}
+
+	std::cout << member->data << std::endl;
+	
+	preOrder(member->left, level + 1);
+	preOrder(member->right, level + 1);
 }
