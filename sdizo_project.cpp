@@ -277,7 +277,7 @@ void menu_BST_Tree()
 		case '4': //tutaj znajdowanie elemetu w tablicy
 			cout << " podaj wartosc:";
 			cin >> value;
-			if (myBSTTree.isValueInTree(value))
+			if (myHeap.isValueInHeap(value))
 				cout << "poadana wartosc jest w kopcu";
 			else
 				cout << "podanej wartosci NIE ma w kopcu";
@@ -292,7 +292,6 @@ void menu_BST_Tree()
 
 		case '6':  //tutaj wyświetlanie tablicy
 			myBSTTree.display();
-			myBSTTree.displayTree();
 			break;
 
 		case '7': //tutaj nasza funkcja do eksperymentów (pomiary czasów i generowanie daneych) - nie będzie testowana przez prowadzącego 
