@@ -42,6 +42,10 @@ public:
 	void rotateL(int index);
 
 	void display();
+
+	void displayTree();
 	
 	void inOrder(TreeMember* member);
+
+	void preOrder(TreeMember* member, int level = 0);
 };
