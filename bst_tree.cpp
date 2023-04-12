@@ -31,7 +31,7 @@ int BST_Tree::loadFromFile(std::string FileName)
 		int i = 0;
 
 		// clear the table
-		if (cnt) {
+		if (cnt || root != nullptr) {
 			postOrderDelete(root);
 			root = nullptr;
 			cnt = 0;
@@ -67,7 +67,8 @@ bool BST_Tree::isValueInTree(int value)
 void BST_Tree::addValue(int value)
 {
 	TreeMember* temp;
-	TreeMember* parentAddress = new TreeMember;
+	TreeMember* parentAddress = nullptr; // new TreeMember;
+
 	if (root != nullptr) {
 		temp = root;
 		
@@ -288,8 +289,7 @@ void BST_Tree::rotateL(TreeMember* temp)
 void BST_Tree::display()
 {	
 	if (root == nullptr || !cnt) std::cout << "Drzewo jest puste." << std::endl;
-	else
-	{
+	else {
 		std::cout << "Size: " << cnt << "\n";
 		
 		TreeMember* temp = root;
