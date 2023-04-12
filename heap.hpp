@@ -26,4 +26,6 @@ public:
 	void resize();
 
 	void display();
+
+	void displayHeap(int index);
 };

@@ -15,7 +15,6 @@ Heap::~Heap()
 	tab = nullptr;
 }
 
-
 void Heap::heapify(int index)
 {
 	int largest;
@@ -66,8 +65,8 @@ int Heap::loadFromFile(std::string FileName)
 
 		file >> cnt;
 
-		tab = new int[cnt+1];
-		tab_size = cnt + 1;
+		tab = new int[cnt + 3];
+		tab_size = cnt + 3;
 
 		// Zrobiæ dodawanie po jednym elem.
 		while (file >> temp) {
@@ -85,9 +84,9 @@ int Heap::loadFromFile(std::string FileName)
 }
 
 /// <summary>
-/// Insert value to the heap
+/// Checking if value is in the heap
 /// </summary>
-/// <param name="value - value to be inserted"></param>
+/// <param name="value - value we're searching for"></param>
 bool Heap::isValueInHeap(int value)
 {
 	for (int i = 0; i < cnt; i++) {
@@ -111,6 +110,10 @@ void Heap::addValue(int value)
 	buildHeap();
 }
 
+/// <summary>
+/// Delete value from the heap
+/// </summary>
+/// <param name="index - value we wanna delete is at this index"></param>
 void Heap::deleteFromHeap(int index)
 {
 	if (!cnt) {
@@ -147,4 +150,29 @@ void Heap::display()
 		std::cout << tab[i] << " ";
 	}
 	std::cout << "\n";
+
+	if (cnt || tab != NULL) {
+		std::cout << "'--";
+		std::cout << tab[0] << std::endl;
+	}
+	displayHeap(1);
+	displayHeap(2);
+}
+
+void Heap::displayHeap(int index)
+{
+	if (index >= cnt) return;
+
+	float n = floor(log2(index + 1));
+
+	while (n > 0) {
+		std::cout << "   ";
+		n--;
+	}
+	if (cnt > index + 1 && index % 2 == 1) std::cout << "|--";
+	else std::cout << "'--";
+	std::cout << tab[index] << std::endl;
+
+	displayHeap(2 * index + 1);
+	displayHeap(2 * index + 2);
 }
