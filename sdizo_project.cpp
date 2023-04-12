@@ -73,7 +73,7 @@ void menu_table()
 			cout << " podaj wartosc:";
 			cin >> value;
 			if (myTab.IsValueInTable(value))
-				cout << "poadana wartosc jest w tablicy";
+				cout << "podana wartosc jest w tablicy";
 			else
 				cout << "podanej wartosci NIE ma w tablicy";
 			break;
@@ -144,9 +144,9 @@ void menu_list()
 			cout << " podaj wartosc:";
 			cin >> value;
 			if (myList.IsValueInList(value))
-				cout << "poadana wartosc jest w tablicy";
+				cout << "podana wartosc jest w tablicy";
 			else
-				cout << "poadanej wartosci NIE ma w tablicy";
+				cout << "podanej wartosci NIE ma w tablicy";
 			break;
 
 		case '5':  //tutaj generowanie  tablicy
@@ -211,7 +211,7 @@ void menu_heap()
 			cout << " podaj wartosc:";
 			cin >> value;
 			if (myHeap.isValueInHeap(value))
-				cout << "poadana wartosc jest w kopcu";
+				cout << "podana wartosc jest w kopcu";
 			else
 				cout << "podanej wartosci NIE ma w kopcu";
 			break;
@@ -225,6 +225,7 @@ void menu_heap()
 
 		case '6':  //tutaj wyświetlanie tablicy
 			myHeap.display();
+			// myHeap.displayHeap();
 			break;
 
 		case '7': //tutaj nasza funkcja do eksperymentów (pomiary czasów i generowanie daneych) - nie będzie testowana przez prowadzącego 
@@ -278,7 +279,7 @@ void menu_BST_Tree()
 			cout << " podaj wartosc:";
 			cin >> value;
 			if (myBSTTree.isValueInTree(value))
-				cout << "poadana wartosc jest w kopcu";
+				cout << "podana wartosc jest w kopcu";
 			else
 				cout << "podanej wartosci NIE ma w kopcu";
 			break;
