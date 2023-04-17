@@ -93,10 +93,10 @@ void menu_table()
 
 		case '7': //tutaj nasza funkcja do eksperymentów (pomiary czasów i generowanie daneych) - nie będzie testowana przez prowadzącego 
 			// można sobie tu dodać własne dodatkowe case'y
-			cout << "Podaj ilosc elementów tablicy:";
-			cin >> value;
+			//cout << "Podaj ilosc elementów tablicy:";
+			//cin >> value;
 			//for (int i = 0; i < 10; i++) {
-			myTab.testFunc(value);
+			myTab.testFunc();
 		//	}			
 			// myTab.display();
 			break;
