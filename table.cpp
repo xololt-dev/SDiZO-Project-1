@@ -191,11 +191,10 @@ void Table::testFunc()
 {
 	srand(time(NULL));
 
-	//int size[8] = { 5000, 8000, 10000, 16000, 20000, 40000, 60000, 100000 };
-	int size[4] = { 5000, 8000, 10000, 16000 };
+	int size[8] = { 5000, 8000, 10000, 16000, 20000, 40000, 60000, 100000 };
 	auto start = std::chrono::steady_clock::now();
 	auto end = std::chrono::steady_clock::now();
-	std::chrono::duration<double, std::nano> elapsed_nano_seconds = end - start;
+	std::chrono::duration<int64_t, std::nano> elapsed_nano_seconds = end - start;
 
 	std::fstream file;
 	std::string txt = ".txt";
@@ -203,7 +202,7 @@ void Table::testFunc()
 	std::string main_folder = "results/";
 	std::string size_string = "";
 
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 8; i++) {
 		size_string = std::to_string(size[i]);
 		// bez limitu
 			// dodaj
@@ -218,18 +217,17 @@ void Table::testFunc()
 				int index = 0;
 				int value = 0;
 
+				start = std::chrono::steady_clock::now();
+
 				for (int k = 0; k < size[i] * 0.05; k++) {
-					index = 0;
-					value = rand() % INT_MAX;
-					start = std::chrono::steady_clock::now();
+					value = rand() % INT_MAX;				
 
 					addValue(index, value);
-
-					end = std::chrono::steady_clock::now();
-					elapsed_nano_seconds = end - start;
-
-					file << elapsed_nano_seconds.count() << "\n";
 				}
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
 			}
 			file.close();
 		}
@@ -244,20 +242,18 @@ void Table::testFunc()
 
 				int index = 0;
 				int value = 0;
+				start = std::chrono::steady_clock::now();
 
 				for (int k = 0; k < size[i] * 0.05; k++) {
 					index = cnt;
 					value = rand() % INT_MAX;
-					
-					start = std::chrono::steady_clock::now();
 
 					addValue(index, value);
-
-					end = std::chrono::steady_clock::now();
-					elapsed_nano_seconds = end - start;
-
-					file << elapsed_nano_seconds.count() << "\n";
 				}
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
 			}
 			file.close();
 		}
@@ -272,20 +268,18 @@ void Table::testFunc()
 
 				int index = 0;
 				int value = 0;
+				start = std::chrono::steady_clock::now();
 
 				for (int k = 0; k < size[i] * 0.05; k++) {
 					index = rand() % INT_MAX;
 					value = rand() % INT_MAX;
-					start = std::chrono::steady_clock::now();
-
+					
 					addValue(index, value);
-
-					end = std::chrono::steady_clock::now();
-					elapsed_nano_seconds = end - start;
-
-					file << elapsed_nano_seconds.count() << "\n";
 				}
-				
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
 			}
 			file.close();
 		}
@@ -298,17 +292,16 @@ void Table::testFunc()
 				srand(time(NULL));
 
 				generateTable(size[i]);
-
+				start = std::chrono::steady_clock::now();
+				
 				for (int k = 0; k < size[i] * 0.05; k++) {
-					start = std::chrono::steady_clock::now();
-
 					deleteFromTable(0);
-
-					end = std::chrono::steady_clock::now();
-					elapsed_nano_seconds = end - start;
-
-					file << elapsed_nano_seconds.count() << "\n";
 				}
+
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
 			}
 			file.close();
 		}
@@ -321,18 +314,16 @@ void Table::testFunc()
 				srand(time(NULL));
 
 				generateTable(size[i]);
+				start = std::chrono::steady_clock::now();
 
 				for (int k = 0; k < size[i] * 0.05; k++) {
-					start = std::chrono::steady_clock::now();
-
 					deleteFromTable(cnt - 1);
-
-					end = std::chrono::steady_clock::now();
-					elapsed_nano_seconds = end - start;
-
-					file << elapsed_nano_seconds.count() << "\n";
 				}
 
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
 			}
 			file.close();
 		}
@@ -347,19 +338,18 @@ void Table::testFunc()
 				generateTable(size[i]);
 
 				int index = 0;
+				start = std::chrono::steady_clock::now();
 
 				for (int k = 0; k < size[i] * 0.05; k++) {
 					index = rand() % cnt;
-					start = std::chrono::steady_clock::now();
-
+					
 					deleteFromTable(index);
-
-					end = std::chrono::steady_clock::now();
-					elapsed_nano_seconds = end - start;
-
-					file << elapsed_nano_seconds.count() << "\n";
 				}
 
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
 			}
 			file.close();
 		}
@@ -375,6 +365,7 @@ void Table::testFunc()
 
 				int value = 0;
 				start = std::chrono::steady_clock::now();
+
 				for (int k = 0; k < size[i] * 0.05; k++) {
 					value = rand() % INT_MAX;
 
@@ -401,20 +392,18 @@ void Table::testFunc()
 
 				int index = 0;
 				int value = 0;
+				start = std::chrono::steady_clock::now();
 
 				for (int k = 0; k < size[i] * 0.05; k++) {
-					index = 0;
 					value = rand() % 100;
 
-					start = std::chrono::steady_clock::now();
-
 					addValue(index, value);
-
-					end = std::chrono::steady_clock::now();
-					elapsed_nano_seconds = end - start;
-
-					file << elapsed_nano_seconds.count() << "\n";
 				}
+
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
 			}
 			file.close();
 		}
@@ -429,21 +418,17 @@ void Table::testFunc()
 
 				int index = 0;
 				int value = 0;
+				start = std::chrono::steady_clock::now();
 
 				for (int k = 0; k < size[i] * 0.05; k++) {
 					index = cnt;
 					value = rand() % 100;
-
-					start = std::chrono::steady_clock::now();
-
 					addValue(index, value);
-
-					end = std::chrono::steady_clock::now();
-					elapsed_nano_seconds = end - start;
-
-					file << elapsed_nano_seconds.count() << "\n";
 				}
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
 
+				file << elapsed_nano_seconds.count() << "\n";
 			}
 			file.close();
 		}
@@ -459,20 +444,19 @@ void Table::testFunc()
 
 				int index = 0;
 				int value = 0;
+				start = std::chrono::steady_clock::now();
 
 				for (int k = 0; k < size[i] * 0.05; k++) {
 					index = rand() % INT_MAX;
 					value = rand() % 100;
-					start = std::chrono::steady_clock::now();
-
-					addValue(index, value);
-
-					end = std::chrono::steady_clock::now();
-					elapsed_nano_seconds = end - start;
-
-					file << elapsed_nano_seconds.count() << "\n";
+					
+					addValue(index, value);	
 				}
 
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
 			}
 			file.close();
 		}
@@ -486,18 +470,15 @@ void Table::testFunc()
 				srand(time(NULL));
 
 				generateTable(size[i], 100);
+				start = std::chrono::steady_clock::now();
 
 				for (int k = 0; k < size[i] * 0.05; k++) {
-					start = std::chrono::steady_clock::now();
-
 					deleteFromTable(0);
-
-					end = std::chrono::steady_clock::now();
-					elapsed_nano_seconds = end - start;
-
-					file << elapsed_nano_seconds.count() << "\n";
 				}
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
 
+				file << elapsed_nano_seconds.count() << "\n";
 			}
 			file.close();
 		}
@@ -510,17 +491,16 @@ void Table::testFunc()
 				srand(time(NULL));
 
 				generateTable(size[i], 100);
+				start = std::chrono::steady_clock::now();
 
 				for (int k = 0; k < size[i] * 0.05; k++) {
-					start = std::chrono::steady_clock::now();
-
 					deleteFromTable(cnt - 1);
-
-					end = std::chrono::steady_clock::now();
-					elapsed_nano_seconds = end - start;
-
-					file << elapsed_nano_seconds.count() << "\n";
 				}
+				
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
 			}
 			file.close();
 		}
@@ -535,18 +515,18 @@ void Table::testFunc()
 				generateTable(size[i], 100);
 
 				int index = 0;
+				start = std::chrono::steady_clock::now();
 
 				for (int k = 0; k < size[i] * 0.05; k++) {
 					index = rand() % cnt;
-					start = std::chrono::steady_clock::now();
 
 					deleteFromTable(index);
-
-					end = std::chrono::steady_clock::now();
-					elapsed_nano_seconds = end - start;
-
-					file << elapsed_nano_seconds.count() << "\n";
 				}
+
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
 			}
 			file.close();
 		}
