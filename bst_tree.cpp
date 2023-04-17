@@ -536,7 +536,9 @@ void BST_Tree::testFunc()
 				// losowo
 		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_add_rand_limit" + txt, std::ios::out | std::ios::app);
 		if (file.good()) {
+			/*
 			for (int j = 0; j < 100; j++) {
+				
 				srand(time(NULL));
 
 				generateBST(size[i]);
@@ -554,6 +556,25 @@ void BST_Tree::testFunc()
 				file << elapsed_nano_seconds.count() << "\n";
 
 			}
+			*/
+			for (int k = 0; k < size[i] * 0.05; k++) {
+				srand(time(NULL));
+
+				generateBST(size[i]);
+
+				int value = 0;
+				value = rand() % 100;
+				start = std::chrono::steady_clock::now();
+
+				
+					
+				addValue(value);
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
+
+			}
 			file.close();
 		}
 		else std::cout << "Plik nie zostal otworzony!\n";
@@ -562,6 +583,7 @@ void BST_Tree::testFunc()
 			// losowo
 		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_delete_random_limit" + txt, std::ios::out | std::ios::app);
 		if (file.good()) {
+			/*
 			for (int j = 0; j < 100; j++) {
 				srand(time(NULL));
 
@@ -577,6 +599,20 @@ void BST_Tree::testFunc()
 				elapsed_nano_seconds = end - start;
 
 				file << elapsed_nano_seconds.count() << "\n";
+			}*/
+			for (int k = 0; k < size[i] * 0.05; k++) {
+				srand(time(NULL));
+
+				generateBST(size[i]);
+
+				start = std::chrono::steady_clock::now();
+
+				
+				deleteTreeRoot();
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
 			}
 			file.close();
 		}
@@ -585,6 +621,7 @@ void BST_Tree::testFunc()
 		// wyszukaj
 		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_search_limit" + txt, std::ios::out | std::ios::app);
 		if (file.good()) {
+			/*
 			for (int j = 0; j < 100; j++) {
 				srand(time(NULL));
 
@@ -597,6 +634,21 @@ void BST_Tree::testFunc()
 					value = rand() % 100;
 					isValueInTree(value);
 				}
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
+			}*/
+			for (int k = 0; k < size[i] * 0.05; k++) {
+				srand(time(NULL));
+
+				generateBST(size[i]);
+
+				int value = 0;
+				value = rand() % 100;
+				start = std::chrono::steady_clock::now();
+
+				isValueInTree(value);
 				end = std::chrono::steady_clock::now();
 				elapsed_nano_seconds = end - start;
 
