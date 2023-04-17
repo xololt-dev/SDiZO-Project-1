@@ -303,7 +303,8 @@ void menu_BST_Tree()
 			// myHeap.testFunc(value);
 			//	}			
 				// myTab.display();
-			myBSTTree.DSW();
+			//myBSTTree.DSW();
+			myBSTTree.testFunc();
 			break;
 		}
 
@@ -368,11 +369,7 @@ void menu_AVL()
 			// można sobie tu dodać własne dodatkowe case'y
 			// cout << "Podaj ilosc elementów kopca:";
 			// cin >> value;
-			//for (int i = 0; i < 10; i++) {
-			// myHeap.testFunc(value);
-			//	}			
-				// myTab.display();
-			//myAVLTree.DSW();
+			myAVLTree.testFunc();
 			break;
 		}
 
