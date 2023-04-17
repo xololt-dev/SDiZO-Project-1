@@ -45,4 +45,6 @@ public:
 	void inOrder(TreeMember* member);
 
 	void preOrder(TreeMember* member, int level = 0);
+
+	void testFunc();
 };

@@ -1,5 +1,6 @@
 #include "bst_tree.hpp"
 #include <iostream>
+#include <chrono>
 #include <fstream>
 
 BST_Tree::BST_Tree() 
@@ -24,7 +25,11 @@ void BST_Tree::postOrderDelete(TreeMember* member)
 
 void BST_Tree::generateBST(int size, int max_value)
 {
-	for (int i = 0; i < size; i++) addValue(rand() % (max_value + 1));
+	postOrderDelete(root);
+	root = nullptr;
+	cnt = 0;
+
+	for (int i = 0; i < size; i++) addValue(rand() % max_value);
 }
 
 int BST_Tree::loadFromFile(std::string FileName)
@@ -96,6 +101,8 @@ void BST_Tree::addValue(int value)
 	if (root == nullptr) root = temp;
 	
 	cnt++;
+
+	DSW();
 }
 
 void BST_Tree::deleteFromTree(int value)
@@ -186,6 +193,8 @@ void BST_Tree::deleteFromTree(int value)
 	temp = nullptr;
 
 	cnt--;
+
+	DSW();
 }
 
 void BST_Tree::deleteTreeRoot()
@@ -235,6 +244,8 @@ void BST_Tree::deleteTreeRoot()
 		root = temp;
 	}
 	cnt--;
+
+	DSW();
 }
 
 void BST_Tree::DSW() 
@@ -255,8 +266,10 @@ void BST_Tree::DSW()
 
 	// n-m rotations left, from root, every second member
 	for (int i = cnt - m; i > 0; i--) {
-		rotateL(temp);
-		temp = temp->parent->right;
+		if (temp != NULL) {
+			if (temp->right != NULL) rotateL(temp);
+			temp = temp->parent->right;
+		}
 	}	
 
 	while (m > 1) {
@@ -265,8 +278,10 @@ void BST_Tree::DSW()
 		temp = root;
 
 		for (int i = m; i > 0; i--) {
-			rotateL(temp);
-			temp = temp->parent->right;
+			if (temp != NULL) {
+				if (temp->right != NULL) rotateL(temp);
+				temp = temp->parent->right;
+			}
 		}		
 	}
 }
@@ -364,4 +379,171 @@ void BST_Tree::preOrder(TreeMember* member, int level)
 	
 	preOrder(member->left, level + 1);
 	preOrder(member->right, level + 1);
+}
+
+void BST_Tree::testFunc()
+{
+	srand(time(NULL));
+
+	int size[8] = { 5000, 8000, 10000, 16000, 20000, 40000, 60000, 100000 };
+	//int size[2] = { 5000, 8000 };//, 10000, 16000 };
+	auto start = std::chrono::steady_clock::now();
+	auto end = std::chrono::steady_clock::now();
+	std::chrono::duration<int64_t, std::nano> elapsed_nano_seconds = end - start;
+
+	std::fstream file;
+	std::string txt = ".txt";
+	std::string file_name = "BST_elements_";
+	std::string main_folder = "results/";
+	std::string size_string = "";
+
+	for (int i = 0; i < 8; i++) {
+		size_string = std::to_string(size[i]);
+		// bez limitu
+			// dodaj	
+				// losowo
+		file.open(main_folder + size_string + "/" + file_name + size_string + "_add_rand " + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+				
+				generateBST(size[i]);
+
+				int value = 0;
+				start = std::chrono::steady_clock::now();
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					value = rand() % INT_MAX;
+					addValue(value);
+				}
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+		// usun
+			// losowo
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_delete_random" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateBST(size[i]);
+
+				start = std::chrono::steady_clock::now();
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					deleteTreeRoot();
+				}
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+
+		// wyszukaj
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_search" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateBST(size[i]);
+
+				int value = 0;
+				start = std::chrono::steady_clock::now();
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					value = rand() % INT_MAX;
+					isValueInTree(value);
+				}
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+
+		// limit
+			// dodaj
+				// losowo
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_add_rand_limit" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateBST(size[i]);
+
+				int value = 0;
+				start = std::chrono::steady_clock::now();
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					value = rand() % 100;
+					addValue(value);
+				}
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
+
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+
+		// usun
+			// losowo
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_delete_random_limit" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateBST(size[i]);
+
+				start = std::chrono::steady_clock::now();
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					deleteTreeRoot();
+				}
+
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+
+		// wyszukaj
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_search_limit" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateBST(size[i]);
+
+				int value = 0;
+				start = std::chrono::steady_clock::now();
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					value = rand() % 100;
+					isValueInTree(value);
+				}
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+	}
 }
