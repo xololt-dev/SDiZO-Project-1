@@ -27,7 +27,9 @@ public:
 
 	void push_backValue(int value, bool increment = true);
 
-	void deleteFromList(int index);
+	void deleteFromList(int value);
+
+	void indexDeleteFromList(int index);
 
 	void pop_frontFromList();
 
@@ -37,5 +39,5 @@ public:
 
 	void generateList(int size, int max_value = INT_MAX);
 
-	void testFunc(int size);
+	void testFunc();
 };
