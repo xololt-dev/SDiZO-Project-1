@@ -12,15 +12,16 @@ class BST_Tree
 {
 private:
 	TreeMember* root;
-	int cnt;		// amount of values in tree
+	int cnt;		// amount of values in table
 
 public:
 	BST_Tree();		//konstruktor - wywo³ywany automatycznie przy tworzeniu obieku
 	~BST_Tree();	//destrukor - wyw³ywany automatycznie przy usuwaniu obiektu
 
+	// void heapify(int index);
 	void postOrderDelete(TreeMember* member);
 
-	void generateBST(int size, int max_value = INT_MAX);
+	void buildTree();
 
 	int loadFromFile(std::string FileName);
 

@@ -35,7 +35,7 @@ public:
 
 	void display();
 
-	void generateList(int size, int max_value = INT_MAX);
+	void generateList(int size);
 
 	void testFunc(int size);
 };

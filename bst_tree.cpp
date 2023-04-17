@@ -22,11 +22,6 @@ void BST_Tree::postOrderDelete(TreeMember* member)
 	member = nullptr;
 }
 
-void BST_Tree::generateBST(int size, int max_value)
-{
-	for (int i = 0; i < size; i++) addValue(rand() % (max_value + 1));
-}
-
 int BST_Tree::loadFromFile(std::string FileName)
 {
 	std::fstream file;
@@ -88,10 +83,8 @@ void BST_Tree::addValue(int value)
 	temp->data = value;
 	temp->parent = parentAddress;
 	temp->left = temp->right = NULL;
-	if (parentAddress != nullptr) {
-		if (parentAddress->data < value) parentAddress->right = temp;
-		else parentAddress->left = temp;
-	}
+	if (parentAddress->data < value) parentAddress->right = temp;
+	else parentAddress->left = temp;
 	
 	if (root == nullptr) root = temp;
 	

@@ -9,7 +9,6 @@
 #include "list.hpp"
 #include "heap.hpp"
 #include "bst_tree.hpp"
-#include "avl.hpp"
 
 using namespace std;
 
@@ -34,7 +33,6 @@ Table myTab; //myTab może być dynamiczna, może byc takze zadeklarowana w manu
 List myList;
 Heap myHeap;
 BST_Tree myBSTTree;
-AVL myAVLTree;
 
 void menu_table()
 {
@@ -221,7 +219,7 @@ void menu_heap()
 		case '5':  //tutaj generowanie  tablicy
 			cout << "Podaj ilosc elementów kopca:";
 			cin >> value;
-			myHeap.generateHeap(value);
+			// myHeap.generateTable(value);
 			myHeap.display();
 			break;
 
@@ -289,7 +287,7 @@ void menu_BST_Tree()
 		case '5':  //tutaj generowanie  tablicy
 			cout << "Podaj ilosc elementów kopca:";
 			cin >> value;
-			myBSTTree.generateBST(value);
+			// myHeap.generateTable(value);
 			myBSTTree.display();
 			break;
 
@@ -313,74 +311,6 @@ void menu_BST_Tree()
 	} while (opt != '0');
 }
 
-void menu_AVL()
-{
-	char opt;
-	string fileName;
-	int index, value;
-
-	do {
-		displayMenu("--- DRZEWO AVL ---");
-		opt = _getche();
-		cout << endl;
-		switch (opt) {
-		case '1': //tutaj wczytytwanie  tablicy z pliku
-			cout << " Podaj nazwę zbioru:";
-			cin >> fileName;
-			myAVLTree.loadFromFile(fileName);
-			myAVLTree.display();
-			break;
-
-		case '2': //tutaj usuwanie elemenu z tablicy
-			cout << " podaj wartosc:";
-			cin >> value;
-			myAVLTree.deleteFromTree(value);
-			myAVLTree.display();
-			break;
-
-		case '3': //tutaj dodawanie elemetu do tablicy
-			cout << " podaj wartość:";
-			cin >> value;
-
-			myAVLTree.addValue(value);
-			myAVLTree.display();
-			break;
-
-		case '4': //tutaj znajdowanie elemetu w tablicy
-			cout << " podaj wartosc:";
-			cin >> value;
-			if (myAVLTree.isValueInTree(value))
-				cout << "podana wartosc jest w kopcu";
-			else
-				cout << "podanej wartosci NIE ma w kopcu";
-			break;
-
-		case '5':  //tutaj generowanie  tablicy
-			cout << "Podaj ilosc elementów kopca:";
-			cin >> value;
-			myAVLTree.generateAVL(value);
-			myAVLTree.display();
-			break;
-
-		case '6':  //tutaj wyświetlanie tablicy
-			myAVLTree.display();
-			myAVLTree.displayTree();
-			break;
-
-		case '7': //tutaj nasza funkcja do eksperymentów (pomiary czasów i generowanie daneych) - nie będzie testowana przez prowadzącego 
-			// można sobie tu dodać własne dodatkowe case'y
-			// cout << "Podaj ilosc elementów kopca:";
-			// cin >> value;
-			//for (int i = 0; i < 10; i++) {
-			// myHeap.testFunc(value);
-			//	}			
-				// myTab.display();
-			//myAVLTree.DSW();
-			break;
-		}
-
-	} while (opt != '0');
-}
 
 int main(int argc, char* argv[])
 {
@@ -392,7 +322,6 @@ int main(int argc, char* argv[])
 		cout << "2.Lista" << endl;
 		cout << "3.Kopiec" << endl;
 		cout << "4.Drzewo BST" << endl;
-		cout << "5.Drzewo AVL" << endl;
 		cout << "0.Wyjscie" << endl;
 		cout << "Podaj opcje:";
 		option = _getche();
@@ -413,10 +342,6 @@ int main(int argc, char* argv[])
 
 		case '4':
 			menu_BST_Tree();
-			break;
-
-		case '5':
-			menu_AVL();
 			break;
 		}
 	} while (option != '0');

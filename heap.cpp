@@ -83,11 +83,6 @@ int Heap::loadFromFile(std::string FileName)
 	return 0;
 }
 
-void Heap::generateHeap(int size, int max_value)
-{
-	for (int i = 0; i < size; i++) addValue(rand() % (max_value + 1));
-}
-
 /// <summary>
 /// Checking if value is in the heap
 /// </summary>
