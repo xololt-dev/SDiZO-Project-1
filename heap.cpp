@@ -114,11 +114,17 @@ void Heap::addValue(int value)
 {
 	// jesli nie ma miejsca, realokujemy
 	if (cnt == tab_size) resize();
-	tab[cnt] = value;
-	cnt++;
 
-	// build heap
-	buildHeap();
+	int i = ++cnt;
+	int parent = floor(i / 2);
+	
+	while (i > 1 && tab[parent - 1] < value) {
+		tab[i - 1] = tab[parent - 1];
+		i = parent;
+		parent = floor(i / 2);
+	}
+
+	tab[i - 1] = value;
 }
 
 /// <summary>
@@ -242,7 +248,7 @@ void Heap::testFunc()
 		}
 		else std::cout << "Plik nie zostal otworzony!\n";
 		// usun
-			// losowo
+			// korzeñ
 		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_delete_random" + txt, std::ios::out | std::ios::app);
 		if (file.good()) {
 			for (int j = 0; j < 100; j++) {
@@ -254,7 +260,6 @@ void Heap::testFunc()
 				start = std::chrono::steady_clock::now();
 
 				for (int k = 0; k < size[i] * 0.05; k++) {
-					index = rand() % cnt;
 					deleteFromHeap(index);
 				}
 				end = std::chrono::steady_clock::now();

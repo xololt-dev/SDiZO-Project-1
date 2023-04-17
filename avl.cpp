@@ -1,6 +1,7 @@
 #include "avl.hpp"
 #include <iostream>
 #include <fstream>
+#include <chrono>
 
 AVL::AVL()
 {
@@ -18,6 +19,8 @@ void AVL::postOrderDelete(AVLTreeMember* member)
 	if (member == NULL) return;
 	postOrderDelete(member->left);
 	postOrderDelete(member->right);
+	//member->left = nullptr;
+	//member->right = nullptr;
 	delete member;
 	member = nullptr;
 }
@@ -25,7 +28,14 @@ void AVL::postOrderDelete(AVLTreeMember* member)
 void AVL::generateAVL(int size, int max_value)
 {
 	srand(time(NULL));
-	for (int i = 0; i < size; i++) addValue(rand() % (1000 + 1));
+	//while (root != nullptr) {
+	//	deleteTreeRoot();
+	//}
+	postOrderDelete(root);
+	root = nullptr;
+	cnt = 0;
+
+	for (int i = 0; i < size; i++) addValue(rand() % max_value);
 }
 
 int AVL::loadFromFile(std::string FileName)
@@ -93,11 +103,11 @@ void AVL::addValue(int value)
 	if (parentAddress != nullptr) {
 		if (parentAddress->data < value) {
 			parentAddress->right = temp;
-			parentAddress->balance -= 1;
+			// parentAddress->balance -= 1;
 		}
 		else {
 			parentAddress->left = temp;
-			parentAddress->balance += 1;
+			// parentAddress->balance += 1;
 		}
 	}
 
@@ -258,7 +268,7 @@ void AVL::setBalance(AVLTreeMember* temp)
 {
 	int balance_temp = 0;
 	if (temp->right == NULL && temp->left == NULL) {
-		temp->balance = balance_temp;
+		temp->balance = 0;
 		return;
 	}
 
@@ -273,6 +283,10 @@ void AVL::rotateR(AVLTreeMember* temp)
 {
 	temp->left->parent = temp->parent;
 	if (temp->parent != NULL) temp->parent->left = temp->left;
+	if (temp->parent != NULL) {
+		if (temp->parent->data > temp->left->data) temp->parent->left = temp->left;
+		else temp->parent->right = temp->left;
+	}
 	temp->parent = temp->left;
 	temp->left = temp->parent->right;
 	if (temp->left != NULL) temp->left->parent = temp;
@@ -287,7 +301,10 @@ void AVL::rotateR(AVLTreeMember* temp)
 void AVL::rotateL(AVLTreeMember* temp)
 {
 	temp->right->parent = temp->parent;
-	if (temp->parent != NULL) temp->parent->right = temp->right;
+	if (temp->parent != NULL) {
+		if(temp->parent->data > temp->right->data) temp->parent->left = temp->right;
+		else temp->parent->right = temp->right;
+	}
 	temp->parent = temp->right;
 	temp->right = temp->parent->left;
 	if (temp->right != NULL) temp->right->parent = temp;
@@ -329,27 +346,27 @@ void AVL::rotateRL(AVLTreeMember* temp)
 void AVL::balance(AVLTreeMember* member)
 {
 	if (member == nullptr) return;
+	
+	if (member->left != NULL || member->right != NULL) {	
 
-	if (member->left == NULL && member->right == NULL) {
-		balance(member->parent);
-		return;
+		setBalance(member);
+		int tree_ineq = calcBias(member);
+
+		if (tree_ineq > 1) {
+			// rotate LR
+			if (calcBias(member->left) < 0) {
+				rotateLR(member->left);
+			}
+			else rotateR(member);
+		}
+		else if (tree_ineq < -1) {
+			// rotate RL
+			if (calcBias(member->right) > 0) {
+				rotateRL(member->right);
+			}
+			else rotateL(member);
+		}
 	}
-
-	setBalance(member);
-	int tree_ineq = calcBias(member);
-
-
-	if (tree_ineq > 1) {
-		// rotate LR
-		if (calcBias(member->left) > 0) rotateLR(member->left);
-		else rotateR(member);
-	}
-	else if (tree_ineq < -1) {
-		// rotate RL
-		if (calcBias(member->right) > 0) rotateRL(member->right);
-		else rotateL(member);
-	}
-
 	balance(member->parent);
 }
 
@@ -435,4 +452,171 @@ void AVL::preOrder(AVLTreeMember* member, int level)
 
 	preOrder(member->left, level + 1);
 	preOrder(member->right, level + 1);
+}
+
+void AVL::testFunc()
+{
+	srand(time(NULL));
+
+	//int size[8] = { 5000, 8000, 10000, 16000, 20000, 40000, 60000, 100000 };
+	int size[2] = { 25, 8000 };//, 10000, 16000 };
+	auto start = std::chrono::steady_clock::now();
+	auto end = std::chrono::steady_clock::now();
+	std::chrono::duration<int64_t, std::nano> elapsed_nano_seconds = end - start;
+
+	std::fstream file;
+	std::string txt = ".txt";
+	std::string file_name = "AVL_elements_";
+	std::string main_folder = "results/";
+	std::string size_string = "";
+
+	for (int i = 0; i < 2; i++) {
+		size_string = std::to_string(size[i]);
+		// bez limitu
+			// dodaj	
+				// losowo
+		file.open(main_folder + size_string + "/" + file_name + size_string + "_add_rand " + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateAVL(size[i]);
+
+				int value = 0;
+				start = std::chrono::steady_clock::now();
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					value = rand() % INT_MAX;
+					addValue(value);
+				}
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+		// usun
+			// losowo
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_delete_random" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateAVL(size[i]);
+
+				start = std::chrono::steady_clock::now();
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					deleteTreeRoot();
+				}
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+
+		// wyszukaj
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_search" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateAVL(size[i]);
+
+				int value = 0;
+				start = std::chrono::steady_clock::now();
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					value = rand() % INT_MAX;
+					isValueInTree(value);
+				}
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+
+		// limit
+			// dodaj
+				// losowo
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_add_rand_limit" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateAVL(size[i]);
+
+				int value = 0;
+				start = std::chrono::steady_clock::now();
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					value = rand() % 100;
+					addValue(value);
+				}
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
+
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+
+		// usun
+			// losowo
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_delete_random_limit" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateAVL(size[i]);
+
+				start = std::chrono::steady_clock::now();
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					deleteTreeRoot();
+				}
+
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+
+		// wyszukaj
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_search_limit" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateAVL(size[i]);
+
+				int value = 0;
+				start = std::chrono::steady_clock::now();
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					value = rand() % 100;
+					isValueInTree(value);
+				}
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+	}
 }

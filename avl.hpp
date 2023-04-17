@@ -53,4 +53,6 @@ public:
 	void inOrder(AVLTreeMember* member);
 
 	void preOrder(AVLTreeMember* member, int level = 0);
+
+	void testFunc();
 };
