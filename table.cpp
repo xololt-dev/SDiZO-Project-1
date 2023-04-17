@@ -153,8 +153,9 @@ void Table::display()
 /// Generate/increase table size using push_back by size parameter
 /// </summary>
 /// <param name="size - requested amount of values to be inserted into the list"></param>
-void Table::generateTable(int size)
+void Table::generateTable(int size, int limit)
 {
+	/*
 	if (size < cnt) {
 		std::cout << "Chcesz utworzyæ mniejsza tablice, kontynuowac? (0 - nie, 1 - tak): ";
 		char k;
@@ -172,36 +173,408 @@ void Table::generateTable(int size)
 			tabTemp[i] = tab[i];
 		}
 		else tabTemp[i] = high;
-	}
+	}*/
 
 	delete[] tab;
+
+	tab = new int[size];
+	for (int i = 0; i < size; i++) {
+		tab[i] = rand() % limit;
+	}	
 	
-	tab = tabTemp;
+	//tab = tabTemp;
 
 	cnt = size;
 }
 
-void Table::testFunc(int size)
+void Table::testFunc()
 {
 	srand(time(NULL));
+
+	//int size[8] = { 5000, 8000, 10000, 16000, 20000, 40000, 60000, 100000 };
+	int size[4] = { 5000, 8000, 10000, 16000 };
 	auto start = std::chrono::steady_clock::now();
-
-	for(int i = 1; i < 100; i++) generateTable(size*i);
-
 	auto end = std::chrono::steady_clock::now();
-	std::chrono::duration<double> elapsed_seconds = end - start;
-	std::cout << "elapsed time: " << elapsed_seconds.count() << "s\n";
-	
-	/*
-	for (int i = cnt - 1; i >= 0; i--) {
-		deleteFromTable(rand()%(i+1));
+	std::chrono::duration<double, std::nano> elapsed_nano_seconds = end - start;
+
+	std::fstream file;
+	std::string txt = ".txt";
+	std::string file_name = "Table_elements_";// +size + txt;
+	std::string main_folder = "results/";
+	std::string size_string = "";
+
+	for (int i = 0; i < 4; i++) {
+		size_string = std::to_string(size[i]);
+		// bez limitu
+			// dodaj
+				// poczatek
+		file.open(main_folder + size_string + "/" + file_name + size_string + "_add_start" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateTable(size[i]);
+
+				int index = 0;
+				int value = 0;
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					index = 0;
+					value = rand() % INT_MAX;
+					start = std::chrono::steady_clock::now();
+
+					addValue(index, value);
+
+					end = std::chrono::steady_clock::now();
+					elapsed_nano_seconds = end - start;
+
+					file << elapsed_nano_seconds.count() << "\n";
+				}
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+				// koniec
+		file.open(main_folder + size_string + "/" + file_name + size_string + "_add_end" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+			
+				generateTable(size[i]);
+
+				int index = 0;
+				int value = 0;
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					index = cnt;
+					value = rand() % INT_MAX;
+					
+					start = std::chrono::steady_clock::now();
+
+					addValue(index, value);
+
+					end = std::chrono::steady_clock::now();
+					elapsed_nano_seconds = end - start;
+
+					file << elapsed_nano_seconds.count() << "\n";
+				}
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+				// losowo
+		file.open(main_folder + size_string + "/" + file_name + size_string + "_add_rand " + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+			
+				generateTable(size[i]);
+
+				int index = 0;
+				int value = 0;
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					index = rand() % INT_MAX;
+					value = rand() % INT_MAX;
+					start = std::chrono::steady_clock::now();
+
+					addValue(index, value);
+
+					end = std::chrono::steady_clock::now();
+					elapsed_nano_seconds = end - start;
+
+					file << elapsed_nano_seconds.count() << "\n";
+				}
+				
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+			// usun
+				// poczatek
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_delete_start" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateTable(size[i]);
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					start = std::chrono::steady_clock::now();
+
+					deleteFromTable(0);
+
+					end = std::chrono::steady_clock::now();
+					elapsed_nano_seconds = end - start;
+
+					file << elapsed_nano_seconds.count() << "\n";
+				}
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+		
+				// koniec
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_delete_end" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateTable(size[i]);
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					start = std::chrono::steady_clock::now();
+
+					deleteFromTable(cnt - 1);
+
+					end = std::chrono::steady_clock::now();
+					elapsed_nano_seconds = end - start;
+
+					file << elapsed_nano_seconds.count() << "\n";
+				}
+
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+
+				// losowo
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_delete_random" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateTable(size[i]);
+
+				int index = 0;
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					index = rand() % cnt;
+					start = std::chrono::steady_clock::now();
+
+					deleteFromTable(index);
+
+					end = std::chrono::steady_clock::now();
+					elapsed_nano_seconds = end - start;
+
+					file << elapsed_nano_seconds.count() << "\n";
+				}
+
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+
+			// wyszukaj
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_search" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateTable(size[i]);
+
+				int value = 0;
+				start = std::chrono::steady_clock::now();
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					value = rand() % INT_MAX;
+
+					IsValueInTable(value);
+				}
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+
+		// limit
+			// dodaj
+				// poczatek
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_add_start_limit" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateTable(size[i], 100);
+
+				int index = 0;
+				int value = 0;
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					index = 0;
+					value = rand() % 100;
+
+					start = std::chrono::steady_clock::now();
+
+					addValue(index, value);
+
+					end = std::chrono::steady_clock::now();
+					elapsed_nano_seconds = end - start;
+
+					file << elapsed_nano_seconds.count() << "\n";
+				}
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+				// koniec
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_add_end_limit" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateTable(size[i], 100);
+
+				int index = 0;
+				int value = 0;
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					index = cnt;
+					value = rand() % 100;
+
+					start = std::chrono::steady_clock::now();
+
+					addValue(index, value);
+
+					end = std::chrono::steady_clock::now();
+					elapsed_nano_seconds = end - start;
+
+					file << elapsed_nano_seconds.count() << "\n";
+				}
+
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+		
+				// losowo
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_add_rand_limit" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateTable(size[i], 100);
+
+				int index = 0;
+				int value = 0;
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					index = rand() % INT_MAX;
+					value = rand() % 100;
+					start = std::chrono::steady_clock::now();
+
+					addValue(index, value);
+
+					end = std::chrono::steady_clock::now();
+					elapsed_nano_seconds = end - start;
+
+					file << elapsed_nano_seconds.count() << "\n";
+				}
+
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+		
+			// usun
+				// poczatek
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_delete_start_limit" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateTable(size[i], 100);
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					start = std::chrono::steady_clock::now();
+
+					deleteFromTable(0);
+
+					end = std::chrono::steady_clock::now();
+					elapsed_nano_seconds = end - start;
+
+					file << elapsed_nano_seconds.count() << "\n";
+				}
+
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+		
+				// koniec
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_delete_end_limit" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateTable(size[i], 100);
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					start = std::chrono::steady_clock::now();
+
+					deleteFromTable(cnt - 1);
+
+					end = std::chrono::steady_clock::now();
+					elapsed_nano_seconds = end - start;
+
+					file << elapsed_nano_seconds.count() << "\n";
+				}
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+
+				// losowo
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_delete_random_limit" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateTable(size[i], 100);
+
+				int index = 0;
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					index = rand() % cnt;
+					start = std::chrono::steady_clock::now();
+
+					deleteFromTable(index);
+
+					end = std::chrono::steady_clock::now();
+					elapsed_nano_seconds = end - start;
+
+					file << elapsed_nano_seconds.count() << "\n";
+				}
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+			
+			// wyszukaj
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_search_limit" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateTable(size[i], 100);
+
+				int value = 0;
+				start = std::chrono::steady_clock::now();
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					value = rand() % 100;
+
+					IsValueInTable(value);
+				}
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;				
+
+				file << elapsed_nano_seconds.count() << "\n";
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
 	}
-	
-	for (int i = 0; i < size; i++) {
-		addValue(rand()%(i+1), i);
-	}
-	
-	for (int i = cnt - 1; i >= 0; i--) {
-		deleteFromTable(rand() % (i + 1));
-	}*/
 }

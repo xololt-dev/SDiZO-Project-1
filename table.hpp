@@ -30,7 +30,7 @@ public:
 
 	void display();
 
-	void generateTable(int size);
+	void generateTable(int size, int limit = INT_MAX);
 
-	void testFunc(int size);
+	void testFunc();
 };
