@@ -34,6 +34,8 @@ public:
 
 	void setBalance(AVLTreeMember* temp);
 
+	int calcBias(AVLTreeMember* temp);
+
 	void rotateR(AVLTreeMember* temp);
 
 	void rotateL(AVLTreeMember* temp);
