@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="avl.cpp" />
     <ClCompile Include="bst_tree.cpp" />
     <ClCompile Include="heap.cpp" />
     <ClCompile Include="list.cpp" />
@@ -134,6 +135,7 @@
     <ClCompile Include="table.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="avl.hpp" />
     <ClInclude Include="bst_tree.hpp" />
     <ClInclude Include="heap.hpp" />
     <ClInclude Include="list.hpp" />
