@@ -24,6 +24,7 @@ void AVL::postOrderDelete(AVLTreeMember* member)
 
 void AVL::generateAVL(int size, int max_value)
 {
+	srand(time(NULL));
 	for (int i = 0; i < size; i++) addValue(rand() % (1000 + 1));
 }
 
@@ -104,8 +105,6 @@ void AVL::addValue(int value)
 	else balance(temp);
 	
 	cnt++;
-	
-	displayTree();
 }
 
 void AVL::deleteFromTree(int value)
@@ -192,6 +191,7 @@ void AVL::deleteFromTree(int value)
 			}
 		}
 	}
+	balance(temp->parent);
 	delete temp;
 	temp = nullptr;
 
@@ -240,9 +240,16 @@ void AVL::deleteTreeRoot()
 			temp->right = root->right;
 			if (temp->right != NULL) temp->right->parent = temp;
 		}
+
+		AVLTreeMember* address = nullptr;
+		if (temp->parent != root) AVLTreeMember* address = temp->parent;
+
 		temp->parent = NULL;
 		delete root;
 		root = temp;
+
+		if (address != nullptr) balance(address);
+		else balance(root);
 	}
 	cnt--;
 }
