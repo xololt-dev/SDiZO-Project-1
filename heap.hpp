@@ -30,4 +30,6 @@ public:
 	void display();
 
 	void displayHeap(int index);
+
+	void testFunc();
 };

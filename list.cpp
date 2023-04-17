@@ -343,9 +343,18 @@ void List::display()
 /// <param name="max_value - requested max of values"></param>
 void List::generateList(int size, int max_value)
 {
+	ListMember* temp;
+
+	while (firstMember != lastMember) {
+		temp = firstMember->next;
+		delete firstMember;
+		firstMember = temp;
+	}
+	delete lastMember;
+
+	cnt = 0;
+
 	for (int i = 0; i < size; i++) {
-		// list->push_backValue(i);
-		// this->push_backValue(i);
 		insertValue(i, rand() % max_value );
 	}
 }
@@ -354,8 +363,8 @@ void List::testFunc()
 {
 	srand(time(NULL));
 
-	//int size[8] = { 5000, 8000, 10000, 16000, 20000, 40000, 60000, 100000 };
-	int size[2] = { 5000, 8000 };//, 10000, 16000 };
+	int size[8] = { 5000, 8000, 10000, 16000, 20000, 40000, 60000, 100000 };
+	//int size[2] = { 5000, 8000 };//, 10000, 16000 };
 	auto start = std::chrono::steady_clock::now();
 	auto end = std::chrono::steady_clock::now();
 	std::chrono::duration<int64_t, std::nano> elapsed_nano_seconds = end - start;
@@ -366,7 +375,7 @@ void List::testFunc()
 	std::string main_folder = "results/";
 	std::string size_string = "";
 
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < 8; i++) {
 		size_string = std::to_string(size[i]);
 		// bez limitu
 			// dodaj

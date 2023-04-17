@@ -1,5 +1,6 @@
 #include "heap.hpp"
 #include <iostream>
+#include <chrono>
 #include <fstream>
 
 Heap::Heap()
@@ -85,7 +86,12 @@ int Heap::loadFromFile(std::string FileName)
 
 void Heap::generateHeap(int size, int max_value)
 {
-	for (int i = 0; i < size; i++) addValue(rand() % (max_value + 1));
+	delete[] tab;
+	tab = nullptr;
+	cnt = 0;
+	tab_size = 0;
+
+	for (int i = 0; i < size; i++) addValue(rand() % max_value);
 }
 
 /// <summary>
@@ -136,14 +142,24 @@ void Heap::deleteFromHeap(int index)
 /// </summary>
 void Heap::resize()
 {
-	int* tabTemp = new int[cnt + 6];
-	tab_size += 6;
-
-	for (int i = 0; i < cnt; i++) {
-		tabTemp[i] = tab[i];
+	int* tabTemp = nullptr;
+	if (cnt != 0) {
+		int new_size = pow(2, ceil(log2(cnt)) + 1) - 1;
+		tabTemp = new int[new_size];
+		tab_size = new_size;
+	}
+	else {
+		tabTemp = new int[cnt + 6];
+		tab_size += 6;
 	}
 
-	delete[] tab;
+	if (tab != nullptr) {
+		for (int i = 0; i < cnt; i++) {
+			tabTemp[i] = tab[i];
+		}
+
+		delete[] tab;
+	}
 
 	tab = tabTemp;
 }
@@ -180,4 +196,175 @@ void Heap::displayHeap(int index)
 
 	displayHeap(2 * index + 1);
 	displayHeap(2 * index + 2);
+}
+
+void Heap::testFunc()
+{
+	srand(time(NULL));
+
+	int size[8] = { 5000, 8000, 10000, 16000, 20000, 40000, 60000, 100000 };
+	//int size[2] = { 5000, 8000 };//, 10000, 16000 };
+	auto start = std::chrono::steady_clock::now();
+	auto end = std::chrono::steady_clock::now();
+	std::chrono::duration<int64_t, std::nano> elapsed_nano_seconds = end - start;
+
+	std::fstream file;
+	std::string txt = ".txt";
+	std::string file_name = "Heap_elements_";
+	std::string main_folder = "results/";
+	std::string size_string = "";
+
+	for (int i = 0; i < 8; i++) {
+		size_string = std::to_string(size[i]);
+		// bez limitu
+			// dodaj	
+				// losowo
+		file.open(main_folder + size_string + "/" + file_name + size_string + "_add_rand " + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateHeap(size[i]);
+
+				int value = 0;
+				start = std::chrono::steady_clock::now();
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					value = rand() % INT_MAX;
+					addValue(value);
+				}
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+		// usun
+			// losowo
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_delete_random" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateHeap(size[i]);
+
+				int index = 0;
+				start = std::chrono::steady_clock::now();
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					index = rand() % cnt;
+					deleteFromHeap(index);
+				}
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+
+		// wyszukaj
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_search" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateHeap(size[i]);
+
+				int value = 0;
+				start = std::chrono::steady_clock::now();
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					value = rand() % INT_MAX;
+					isValueInHeap(value);
+				}
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+
+		// limit
+			// dodaj
+				// losowo
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_add_rand_limit" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateHeap(size[i]);
+
+				int value = 0;
+				start = std::chrono::steady_clock::now();
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					value = rand() % 100;
+					addValue(value);
+				}
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
+
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+
+		// usun
+			// losowo
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_delete_random_limit" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateHeap(size[i]);
+
+				int index = 0;
+				start = std::chrono::steady_clock::now();
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					index = rand() % cnt;
+					deleteFromHeap(index);
+				}
+
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+
+		// wyszukaj
+		file.open(main_folder + std::to_string(size[i]) + "/" + file_name + std::to_string(size[i]) + "_search_limit" + txt, std::ios::out | std::ios::app);
+		if (file.good()) {
+			for (int j = 0; j < 100; j++) {
+				srand(time(NULL));
+
+				generateHeap(size[i]);
+
+				int value = 0;
+				start = std::chrono::steady_clock::now();
+
+				for (int k = 0; k < size[i] * 0.05; k++) {
+					value = rand() % 100;
+					isValueInHeap(value);
+				}
+				end = std::chrono::steady_clock::now();
+				elapsed_nano_seconds = end - start;
+
+				file << elapsed_nano_seconds.count() << "\n";
+			}
+			file.close();
+		}
+		else std::cout << "Plik nie zostal otworzony!\n";
+	}
 }
