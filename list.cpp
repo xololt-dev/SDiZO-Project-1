@@ -301,12 +301,13 @@ void List::display()
 /// Generate/increase list size using push_back by size parameter
 /// </summary>
 /// <param name="size - requested amount of values to be inserted into the list"></param>
-void List::generateList(int size)
+/// <param name="max_value - requested max of values"></param>
+void List::generateList(int size, int max_value)
 {
 	for (int i = 0; i < size; i++) {
 		// list->push_backValue(i);
 		// this->push_backValue(i);
-		insertValue(rand()%(i+1), i);
+		insertValue(rand()%(i+1), rand() % (max_value + 1));
 	}
 }
 

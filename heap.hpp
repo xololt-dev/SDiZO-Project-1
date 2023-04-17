@@ -17,6 +17,8 @@ public:
 
 	int loadFromFile(std::string FileName);
 
+	void generateHeap(int size, int max_value = INT_MAX);
+
 	bool isValueInHeap(int value);
 
 	void addValue(int value);

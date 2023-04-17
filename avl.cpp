@@ -1,19 +1,19 @@
-#include "bst_tree.hpp"
+#include "avl.hpp"
 #include <iostream>
 #include <fstream>
 
-BST_Tree::BST_Tree() 
+AVL::AVL()
 {
 	root = nullptr;
 	cnt = 0;
 }
 
-BST_Tree::~BST_Tree()
+AVL::~AVL()
 {
 	postOrderDelete(root);
 }
 
-void BST_Tree::postOrderDelete(TreeMember* member)
+void AVL::postOrderDelete(AVLTreeMember* member)
 {
 	if (member == NULL) return;
 	postOrderDelete(member->left);
@@ -22,12 +22,12 @@ void BST_Tree::postOrderDelete(TreeMember* member)
 	member = nullptr;
 }
 
-void BST_Tree::generateBST(int size, int max_value)
+void AVL::generateAVL(int size, int max_value)
 {
-	for (int i = 0; i < size; i++) addValue(rand() % (max_value + 1));
+	for (int i = 0; i < size; i++) addValue(rand() % (1000 + 1));
 }
 
-int BST_Tree::loadFromFile(std::string FileName)
+int AVL::loadFromFile(std::string FileName)
 {
 	std::fstream file;
 	file.open(FileName, std::ios::in);
@@ -56,9 +56,9 @@ int BST_Tree::loadFromFile(std::string FileName)
 	return 0;
 }
 
-bool BST_Tree::isValueInTree(int value)
+bool AVL::isValueInTree(int value)
 {
-	TreeMember* temp = root;
+	AVLTreeMember* temp = root;
 
 	while (temp != NULL) {
 		if (temp->data == value) return true;
@@ -69,14 +69,14 @@ bool BST_Tree::isValueInTree(int value)
 	return false;
 }
 
-void BST_Tree::addValue(int value)
+void AVL::addValue(int value)
 {
-	TreeMember* temp;
-	TreeMember* parentAddress = nullptr; // new TreeMember;
+	AVLTreeMember* temp;
+	AVLTreeMember* parentAddress = nullptr; // new TreeMember;
 
 	if (root != nullptr) {
 		temp = root;
-		
+
 		while (temp != NULL) {
 			parentAddress = temp;
 			if (temp->data > value) temp = temp->left;
@@ -84,21 +84,31 @@ void BST_Tree::addValue(int value)
 		}
 	}
 
-	temp = new TreeMember;
+	temp = new AVLTreeMember;
 	temp->data = value;
 	temp->parent = parentAddress;
+	temp->balance = 0;
 	temp->left = temp->right = NULL;
 	if (parentAddress != nullptr) {
-		if (parentAddress->data < value) parentAddress->right = temp;
-		else parentAddress->left = temp;
+		if (parentAddress->data < value) {
+			parentAddress->right = temp;
+			parentAddress->balance -= 1;
+		}
+		else {
+			parentAddress->left = temp;
+			parentAddress->balance += 1;
+		}
 	}
-	
+
 	if (root == nullptr) root = temp;
+	else balance(temp);
 	
 	cnt++;
+	
+	displayTree();
 }
 
-void BST_Tree::deleteFromTree(int value)
+void AVL::deleteFromTree(int value)
 {
 	if (!cnt || root == nullptr) return;
 
@@ -107,12 +117,12 @@ void BST_Tree::deleteFromTree(int value)
 		return;
 	}
 
-	TreeMember* temp = root;
-	
+	AVLTreeMember* temp = root;
+
 	// find the node with the right value
-	while(temp->data != value) {
+	while (temp->data != value) {
 		if (temp->data > value) {
-			if(temp->left != NULL) temp = temp->left;
+			if (temp->left != NULL) temp = temp->left;
 			else std::cout << "Wartosc nie istnieje! \n";
 		}
 		else {
@@ -130,7 +140,7 @@ void BST_Tree::deleteFromTree(int value)
 	}
 	// node has children, find a node to swap to
 	else {
-		TreeMember* tempSwap = temp;
+		AVLTreeMember* tempSwap = temp;
 
 		if (tempSwap->left == NULL || tempSwap->right == NULL) {
 			// 1 subtree
@@ -178,7 +188,7 @@ void BST_Tree::deleteFromTree(int value)
 					temp->left->parent = tempSwap;
 					temp->parent->right = tempSwap;
 					tempSwap->parent = temp->parent;
-				}				
+				}
 			}
 		}
 	}
@@ -188,7 +198,7 @@ void BST_Tree::deleteFromTree(int value)
 	cnt--;
 }
 
-void BST_Tree::deleteTreeRoot()
+void AVL::deleteTreeRoot()
 {
 	if (!cnt || root == nullptr) return;
 
@@ -197,22 +207,22 @@ void BST_Tree::deleteTreeRoot()
 		root = nullptr;
 	}
 	else {
-		TreeMember* temp = nullptr;
+		AVLTreeMember* temp = nullptr;
 
 		if (root->right != NULL) {
 			temp = root->right;
-			
+
 			while (temp->left != NULL) temp = temp->left;
 
 			if (temp->parent != root) {
 				temp->parent->left = temp->right;
 				if (temp->right != NULL) temp->right->parent = temp->parent;
-				
+
 				temp->right = root->right;
 				temp->right->parent = temp;
 			}
 			temp->left = root->left;
-			if(temp->left != NULL) temp->left->parent = temp;
+			if (temp->left != NULL) temp->left->parent = temp;
 		}
 		else if (root->left != NULL) {
 			temp = root->left;
@@ -224,11 +234,11 @@ void BST_Tree::deleteTreeRoot()
 				if (temp->left != NULL) temp->left->parent = temp->parent;
 
 				temp->left = root->left;
-				temp->left->parent = temp;		
+				temp->left->parent = temp;
 			}
 
 			temp->right = root->right;
-			if(temp->right != NULL) temp->right->parent = temp;
+			if (temp->right != NULL) temp->right->parent = temp;
 		}
 		temp->parent = NULL;
 		delete root;
@@ -237,52 +247,44 @@ void BST_Tree::deleteTreeRoot()
 	cnt--;
 }
 
-void BST_Tree::DSW() 
+void AVL::setBalance(AVLTreeMember* temp)
 {
-	TreeMember* temp = root;
-
-	// unfold the tree
-	while (temp != NULL) {
-		if (temp->left != NULL) {
-			rotateR(temp);
-			temp = temp->parent;
-		}
-		else temp = temp->right;
+	int balance_temp = 0;
+	if (temp->right == NULL && temp->left == NULL) {
+		temp->balance = balance_temp;
+		return;
 	}
 
-	int m = pow(2, floor(log2(cnt + 1))) - 1;
-	temp = root;
+	if (temp->left != NULL) balance_temp = abs(temp->left->balance) + 1;
 
-	// n-m rotations left, from root, every second member
-	for (int i = cnt - m; i > 0; i--) {
-		rotateL(temp);
-		temp = temp->parent->right;
-	}	
-
-	while (m > 1) {
-		// m rotations left, from root, every second member
-		m = floor(m / 2);
-		temp = root;
-
-		for (int i = m; i > 0; i--) {
-			rotateL(temp);
-			temp = temp->parent->right;
-		}		
+	if (temp->right != NULL && abs(temp->right->balance) >= balance_temp) balance_temp = -(abs(temp->right->balance) + 1);
+	/*
+	if (temp->left == NULL && temp->right != NULL) temp->balance = -(abs(temp->right->balance) + 1);
+	else if (temp->right == NULL && temp->left != NULL) temp->balance = abs(temp->left->balance) + 1;
+	else if (temp->right == NULL && temp->left == NULL) temp->balance = 0;
+	else {
+		temp->balance = abs(temp->left->balance) - abs(temp->right->balance);
 	}
+	*/
 }
 
-void BST_Tree::rotateR(TreeMember* temp)
+void AVL::rotateR(AVLTreeMember* temp)
 {
 	temp->left->parent = temp->parent;
-	if (temp->parent != NULL) temp->parent->right = temp->left;
+	if (temp->parent != NULL) temp->parent->left = temp->left;
 	temp->parent = temp->left;
-	temp->left = temp->left->right;
+	temp->left = temp->parent->right;
 	if (temp->left != NULL) temp->left->parent = temp;
 	temp->parent->right = temp;
+
 	if (temp == root) root = temp->parent;
+
+	setBalance(temp);
+	if (temp->parent->left != NULL) setBalance(temp->parent->left);
+	setBalance(temp->parent);
 }
 
-void BST_Tree::rotateL(TreeMember* temp)
+void AVL::rotateL(AVLTreeMember* temp)
 {
 	temp->right->parent = temp->parent;
 	if (temp->parent != NULL) temp->parent->right = temp->right;
@@ -290,16 +292,126 @@ void BST_Tree::rotateL(TreeMember* temp)
 	temp->right = temp->parent->left;
 	if (temp->right != NULL) temp->right->parent = temp;
 	temp->parent->left = temp;
-	if (temp == root) root = temp->parent;
+	if (root == temp) root = temp->parent;
+
+	setBalance(temp);
+
+	if (temp->parent->right != NULL) setBalance(temp->parent->right);
+
+	setBalance(temp->parent);
 }
 
-void BST_Tree::display()
-{	
+void AVL::rotateLR(AVLTreeMember* temp)
+{
+	temp->right->parent = temp->parent;
+	temp->parent->left = temp->right;
+	temp->parent = temp->right;
+	temp->parent->left = temp;
+	temp->right = temp->parent->right;
+	temp->balance += 1;
+	temp->parent->balance -= 1;
+
+	rotateR(temp->parent->parent);
+}
+
+void AVL::rotateRL(AVLTreeMember* temp)
+{
+	temp->left->parent = temp->parent;
+	temp->parent->right = temp->left;
+	temp->parent = temp->left;
+	temp->parent->right = temp;
+	temp->left = temp->parent->left;
+	temp->balance += 1;
+	temp->parent->balance -= 1;
+
+	rotateL(temp->parent->parent);
+}
+
+void AVL::balance(AVLTreeMember* member)
+{
+	// change balance to be height of the tree cause idk
+
+	if (member == nullptr) return;
+
+	if (member->left == NULL && member->right == NULL) {
+		balance(member->parent);
+		return;
+	}
+	//if (member->data > member->parent->data) member->parent->balance -= 1;
+	//else member->parent->balance += 1;
+	
+	setBalance(member);
+	
+	/*
+	if (member->data > member->parent->data) {
+		if (member->parent->left == NULL) difference = -(member->balance);
+		else difference = member->parent->left->balance - member->balance;
+	}
+	else {
+		if (member->parent->right == NULL) difference = member->balance;
+		else difference = member->balance - member->parent->right->balance;
+	}
+	*/
+
+	if (member->balance > 1) {
+		if (member->left->right != NULL) {
+			// rotate LR
+			rotateLR(member->left);
+		}
+		else {
+			do {
+				rotateR(member);
+			} while (member->balance > 1);
+		}
+
+		return;
+	}
+	else if (member->balance < -1) {
+		if (member->right->left != NULL) {
+			// rotate RL
+			rotateRL(member->right);
+		}
+		else {
+			do {
+				rotateL(member);
+			} while (member->balance < -1);
+		}
+
+		return;
+	}
+	/*
+	if (member->parent->balance > 1) {
+		if (member->right != NULL) {
+			// rotate LR
+			rotateLR(member);
+		}
+		else {
+			rotateR(member->parent);
+		}
+		
+		return;
+	}
+	else if (member->parent->balance < -1) {
+		if (member->left != NULL) {
+			rotateRL(member);
+		}
+		else {
+			rotateL(member->parent);
+		}
+
+		return;
+	}
+	*/
+	balance(member->parent);
+}
+
+void AVL::display()
+{
 	if (root == nullptr || !cnt) std::cout << "Drzewo jest puste." << std::endl;
 	else {
 		std::cout << "Size: " << cnt << "\n";
-		
-		TreeMember* temp = root;
+
+		AVLTreeMember* temp = root;
 		inOrder(root->left);
 		std::cout << temp->data << " ";
 		inOrder(root->right);
@@ -307,7 +419,22 @@ void BST_Tree::display()
 	}
 }
 
-void BST_Tree::inOrder(TreeMember* member)
+void AVL::displayTree()
+{
+	if (root != NULL) {
+		AVLTreeMember* temp = root;
+
+		std::cout << "'--";
+		std::cout << temp->data << std::endl;
+
+		// preorder
+		preOrder(temp->left, 1);
+		preOrder(temp->right, 1);
+	}
+	else std::cout << "Drzewo jest puste." << std::endl;
+}
+
+void AVL::inOrder(AVLTreeMember* member)
 {
 	if (member == NULL) return;
 
@@ -316,25 +443,10 @@ void BST_Tree::inOrder(TreeMember* member)
 	inOrder(member->right);
 }
 
-void BST_Tree::displayTree()
-{
-	if (root != NULL) {
-		TreeMember* temp = root;
-
-		std::cout << "'--";
-		std::cout << temp->data << std::endl;
-		
-		// preorder
-		preOrder(temp->left, 1);
-		preOrder(temp->right, 1);
-	}
-	else std::cout << "Drzewo jest puste." << std::endl;
-}
-
-void BST_Tree::preOrder(TreeMember* member, int level)
+void AVL::preOrder(AVLTreeMember* member, int level)
 {
 	if (member == NULL) return;
-	
+
 	// #1 is it left from root
 	// #2 is it left from parent
 
@@ -346,8 +458,8 @@ void BST_Tree::preOrder(TreeMember* member, int level)
 			}
 			else std::cout << "   ";
 		}
-		if (member->data < member->parent->data && member->parent->right != NULL) std::cout << "|--";
-		else std::cout << "'--";		
+		if (member->data < member->parent->data&& member->parent->right != NULL) std::cout << "|--";
+		else std::cout << "'--";
 	}
 	else {
 		// right from root
@@ -361,7 +473,7 @@ void BST_Tree::preOrder(TreeMember* member, int level)
 		else std::cout << "'--";
 	}
 	std::cout << member->data << std::endl;
-	
+
 	preOrder(member->left, level + 1);
 	preOrder(member->right, level + 1);
 }
