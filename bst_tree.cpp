@@ -132,7 +132,7 @@ void BST_Tree::addValue(int value)
 	
 	cnt++;
 
-	DSW();
+	//DSW();
 }
 
 void BST_Tree::deleteFromTree(int value)
@@ -224,7 +224,7 @@ void BST_Tree::deleteFromTree(int value)
 
 	cnt--;
 
-	DSW();
+	//DSW();
 }
 
 void BST_Tree::deleteTreeRoot()
@@ -285,7 +285,7 @@ void BST_Tree::deleteTreeRoot()
 	}
 	cnt--;
 
-	DSW();
+	//DSW();
 }
 
 void BST_Tree::DSW() 
