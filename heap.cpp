@@ -140,7 +140,9 @@ void Heap::deleteFromHeap(int index)
 
 	tab[index] = tab[--cnt];
 	tab[cnt + 1] = NULL;
-	heapify(index);
+
+	if (tab[static_cast<int>(floor((index - 1) / 2))] < tab[index]) heapify(floor((index - 1) / 2));
+	else heapify(index);
 }
 
 /// <summary>
