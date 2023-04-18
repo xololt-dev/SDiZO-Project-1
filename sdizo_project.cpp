@@ -248,7 +248,19 @@ void menu_BST_Tree()
 	int index, value;
 
 	do {
-		displayMenu("--- DRZEWO BST ---");
+		cout << endl;
+		cout << "--- DRZEWO BST ---" << endl;
+		cout << "1.Wczytaj z pliku" << endl;
+		cout << "2.Usun" << endl;
+		cout << "3.Dodaj" << endl;
+		cout << "4.Znajdz" << endl;
+		cout << "5.Utworz losowo" << endl;
+		cout << "6.Wyswietl" << endl;
+		cout << "7.Test (pomiary)" << endl;
+		cout << "0.Powrot do menu" << endl;
+		cout << "8.DSW" << endl;
+		cout << "Podaj opcje:";
+
 		opt = _getche();
 		cout << endl;
 		switch (opt) {
@@ -305,6 +317,9 @@ void menu_BST_Tree()
 				// myTab.display();
 			//myBSTTree.DSW();
 			myBSTTree.testFunc();
+			break;
+		case '8':
+			myBSTTree.DSW();
 			break;
 		}
 
